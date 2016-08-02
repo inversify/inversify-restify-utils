@@ -1,0 +1,254 @@
+/// <reference path="../typings/index.d.ts" />
+/// <reference path="../node_modules/inversify-dts/inversify/inversify.d.ts" />
+/// <reference path="../node_modules/reflect-metadata/reflect-metadata.d.ts" />
+
+import "reflect-metadata";
+
+// test libraries
+import * as sinon from "sinon";
+import * as request from "supertest";
+import { expect } from "chai";
+
+// dependencies
+import * as restify from "restify";
+import { injectable, Kernel } from "inversify";
+import interfaces from "../src/interfaces";
+import { InversifyRestifyServer } from "../src/server";
+import { Controller, Method, Get, Post, Put, Patch, Head, Delete } from "../src/decorators";
+import { TYPE } from "../src/constants";
+
+describe("Integration Tests:", () => {
+    let server: InversifyRestifyServer;
+    let kernel: inversify.interfaces.Kernel;
+
+    beforeEach((done) => {
+        // refresh container and kernel
+        kernel = new Kernel();
+        done();
+    });
+
+    describe("Routing & Request Handling:", () => {
+
+        it("should work for async controller methods", (done) => {
+            @injectable()
+            @Controller("/")
+            class TestController {
+                @Get("/") public getTest(req: restify.Request, res: restify.Response) {
+                    return new Promise(((resolve) => {
+                        setTimeout(resolve, 100, "GET");
+                    }));
+                }
+            }
+            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(kernel);
+            request(server.build())
+                .get("/")
+                .set("Accept", "text/plain")
+                .expect(200, "GET", done);
+        });
+
+        it("should work for async controller methods that fails", (done) => {
+            @injectable()
+            @Controller("/")
+            class TestController {
+                @Get("/") public getTest(req: restify.Request, res: restify.Response) {
+                    return new Promise(((resolve, reject) => {
+                        setTimeout(reject, 100, "GET");
+                    }));
+                }
+            }
+            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(kernel);
+            request(server.build())
+                .get("/")
+                .expect(500, done);
+        });
+
+
+        it("should work for each shortcut decorator", (done) => {
+            @injectable()
+            @Controller("/")
+            class TestController {
+                @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+                @Post("/") public postTest(req: restify.Request, res: restify.Response) { res.send("POST"); }
+                @Put("/") public putTest(req: restify.Request, res: restify.Response) { res.send("PUT"); }
+                @Patch("/") public patchTest(req: restify.Request, res: restify.Response) { res.send("PATCH"); }
+                @Head("/") public headTest(req: restify.Request, res: restify.Response) { res.send("HEAD"); }
+                @Delete("/") public deleteTest(req: restify.Request, res: restify.Response) { res.send("DELETE"); }
+            }
+            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(kernel);
+            let agent = request(server.build());
+
+            let deleteFn = () => { agent.delete("/").set("Accept", "text/plain").expect(200, "DELETE", done); };
+            let head = () => { agent.head("/").set("Accept", "text/plain").expect(200, "HEAD", deleteFn); };
+            let patch = () => { agent.patch("/").set("Accept", "text/plain").expect(200, "PATCH", head); };
+            let put = () => { agent.put("/").set("Accept", "text/plain").expect(200, "PUT", patch); };
+            let post = () => { agent.post("/").set("Accept", "text/plain").expect(200, "POST", put); };
+            let get = () => { agent.get("/").set("Accept", "text/plain").expect(200, "GET", post); };
+
+            get();
+        });
+
+
+        it("should work for more obscure HTTP methods using the Method decorator", (done) => {
+            @injectable()
+            @Controller("/")
+            class TestController {
+                @Method("opts", "/") public getTest(req: restify.Request, res: restify.Response) { res.send("OPTIONS"); }
+            }
+            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(kernel);
+            request(server.build())
+                .options("/")
+                .set("Accept", "text/plain")
+                .expect(200, "OPTIONS", done);
+        });
+
+
+        it("should use returned values as response", (done) => {
+            let result = {"hello": "world"};
+
+            @injectable()
+            @Controller("/")
+            class TestController {
+                @Get("/") public getTest(req: restify.Request, res: restify.Response) { return result; }
+            }
+            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(kernel);
+            request(server.build())
+                .get("/")
+                .expect(200, JSON.stringify(result), done);
+        });
+    });
+
+
+    describe("Middleware:", () => {
+        let result: string;
+        let middleware: any = {
+            a: function (req: restify.Request, res: restify.Response, next: restify.Next) {
+                result += "a";
+                next();
+            },
+            b: function (req: restify.Request, res: restify.Response, next: restify.Next) {
+                result += "b";
+                next();
+            },
+            c: function (req: restify.Request, res: restify.Response, next: restify.Next) {
+                result += "c";
+                next();
+            }
+        };
+        let spyA = sinon.spy(middleware, "a");
+        let spyB = sinon.spy(middleware, "b");
+        let spyC = sinon.spy(middleware, "c");
+
+        beforeEach((done) => {
+            result = "";
+            spyA.reset();
+            spyB.reset();
+            spyC.reset();
+            done();
+        });
+
+        it("should call method-level middleware correctly", (done) => {
+            @injectable()
+            @Controller("/")
+            class TestController {
+                @Get("/", spyA, spyB, spyC) public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+            }
+            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(kernel);
+            request(server.build())
+                .get("/")
+                .expect(200, "GET", function () {
+                    expect(spyA.calledOnce).to.be.true;
+                    expect(spyB.calledOnce).to.be.true;
+                    expect(spyC.calledOnce).to.be.true;
+                    expect(result).to.equal("abc");
+                    done();
+                });
+        });
+
+
+        it("should call controller-level middleware correctly", (done) => {
+            @injectable()
+            @Controller("/", spyA, spyB, spyC)
+            class TestController {
+                @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+            }
+            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(kernel);
+            request(server.build())
+                .get("/")
+                .expect(200, "GET", function () {
+                    expect(spyA.calledOnce).to.be.true;
+                    expect(spyB.calledOnce).to.be.true;
+                    expect(spyC.calledOnce).to.be.true;
+                    expect(result).to.equal("abc");
+                    done();
+                });
+        });
+
+
+        it("should call server-level middleware correctly", (done) => {
+            @injectable()
+            @Controller("/")
+            class TestController {
+                @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+            }
+            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(kernel);
+
+            server.setConfig((app) => {
+               app.use(spyA);
+               app.use(spyB);
+               app.use(spyC);
+            });
+
+            request(server.build())
+                .get("/")
+                .expect(200, "GET", function () {
+                    expect(spyA.calledOnce).to.be.true;
+                    expect(spyB.calledOnce).to.be.true;
+                    expect(spyC.calledOnce).to.be.true;
+                    expect(result).to.equal("abc");
+                    done();
+                });
+        });
+
+
+        it("should call all middleware in correct order", (done) => {
+            @injectable()
+            @Controller("/", spyB)
+            class TestController {
+                @Get("/", spyC) public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+            }
+            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(kernel);
+
+            server.setConfig((app) => {
+               app.use(spyA);
+            });
+
+            request(server.build())
+                .get("/")
+                .expect(200, "GET", function () {
+                    expect(spyA.calledOnce).to.be.true;
+                    expect(spyB.calledOnce).to.be.true;
+                    expect(spyC.calledOnce).to.be.true;
+                    expect(result).to.equal("abc");
+                    done();
+                });
+        });
+    });
+});

@@ -14,9 +14,6 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
-# nyc test coverage
-.nyc_output
-
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
@@ -26,12 +23,42 @@ coverage
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 
-# Dependency directories
+# Dependency directory
 node_modules
-jspm_packages
 
 # Optional npm cache directory
 .npm
 
 # Optional REPL history
 .node_repl_history
+
+build
+node_modules
+bower_components
+docs
+bundled
+
+typings
+.typingsrc
+dist
+lib
+es
+
+type_definitions/inversify/*.js
+
+src/*.js
+src/**/*.js
+
+src/*.js.map
+src/**/*.js.map
+
+src/*.d.ts
+src/decorator/*.d.ts
+src/factory/*.d.ts
+src/syntax/*.d.ts
+
+test/*.js
+test/**/*.js
+
+type_definitions/**/*.js
+type_definitions/*.js
