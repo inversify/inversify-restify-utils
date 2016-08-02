@@ -8,7 +8,7 @@ import { InversifyRestifyServer } from "../src/server";
 import { Kernel, injectable } from "inversify";
 import { TYPE } from "../src/constants";
 
-describe("Unit Test: InversifyExpressServer", () => {
+describe("Unit Test: InversifyRestifyServer", () => {
 
     it("should call the configFn before the errorConfigFn", (done) => {
         let middleware = function(req: restify.Request, res: restify.Response, next: restify.Next) { return; };
