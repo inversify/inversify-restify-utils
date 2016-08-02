@@ -2,15 +2,15 @@
   "name": "inversify-restify-utils",
   "dependencies": {},
   "globalDependencies": {
-    "bluebird": "registry:dt/bluebird#2.0.0+20160319051630",
+    "bluebird": "registry:dt/bluebird#2.0.0+20160701023356",
     "bunyan": "registry:dt/bunyan#0.0.0+20160412155112",
     "chai": "registry:dt/chai#3.4.0+20160601211834",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
-    "mocha": "registry:dt/mocha#2.2.5+20160619032855",
-    "node": "registry:dt/node#6.0.0+20160621231320",
+    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
+    "node": "registry:dt/node#6.0.0+20160802155038",
     "restify": "registry:dt/restify#2.0.0+20160726153409",
     "sinon": "registry:dt/sinon#1.16.0+20160517064723",
-    "superagent": "registry:dt/superagent#1.4.0+20160317120654",
-    "supertest": "registry:dt/supertest#1.1.0+20160317120654"
+    "superagent": "registry:dt/superagent#1.4.0+20160724070541",
+    "supertest": "registry:dt/supertest#1.1.0+20160724070541"
   }
 }
