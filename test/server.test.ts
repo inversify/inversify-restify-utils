@@ -13,7 +13,6 @@ describe("Unit Test: InversifyRestifyServer", () => {
     it("should call the configFn", (done) => {
         let middleware = function(req: restify.Request, res: restify.Response, next: restify.Next) { return; };
         let configFn = sinon.spy((app: restify.Server) => { app.use(middleware); });
-        let errorConfigFn = sinon.spy((app: restify.Server) => { app.use(middleware); });
         let kernel = new Kernel();
 
         @injectable()
