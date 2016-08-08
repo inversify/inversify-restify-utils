@@ -1,5 +1,17 @@
 # inversify-restify-utils
 
+[![Join the chat at https://gitter.im/inversify/InversifyJS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/inversify/InversifyJS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://secure.travis-ci.org/inversify/inversify-restify-utils.svg?branch=master)](https://travis-ci.org/inversify/inversify-restify-utils)
+[![Test Coverage](https://codeclimate.com/github/inversify/inversify-restify-utils/badges/coverage.svg)](https://codeclimate.com/github/inversify/inversify-restify-utils/coverage)
+[![npm version](https://badge.fury.io/js/inversify-restify-utils.svg)](http://badge.fury.io/js/inversify-restify-utils)
+[![Dependencies](https://david-dm.org/inversify/inversify-restify-utils.svg)](https://david-dm.org/inversify/inversify-restify-utils#info=dependencies)
+[![img](https://david-dm.org/inversify/inversify-restify-utils/dev-status.svg)](https://david-dm.org/inversify/inversify-restify-utils/#info=devDependencies)
+[![img](https://david-dm.org/inversify/inversify-restify-utils/peer-status.svg)](https://david-dm.org/inversify/inversify-restify-utils/#info=peerDependenciess)
+[![Known Vulnerabilities](https://snyk.io/test/github/inversify/inversify-restify-utils/badge.svg)](https://snyk.io/test/github/inversify/inversify-restify-utils)
+
+[![NPM](https://nodei.co/npm/inversify-restify-utils.png?downloads=true&downloadRank=true)](https://nodei.co/npm/inversify-restify-utils/)
+[![NPM](https://nodei.co/npm-dl/inversify-restify-utils.png?months=9&height=3)](https://nodei.co/npm/inversify-restify-utils/)
+
 Some utilities for the development of restify application with Inversify.
 
 ## The Basics
