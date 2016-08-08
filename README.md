@@ -81,19 +81,6 @@ server.setConfig((app) => {
 });
 ```
 
-### `.setErrorConfig(errorConfigFn)`
-Optional - like `.setConfig()`, except this function is applied after registering all app middleware and controller routes.
-
-```ts
-let server = new InversifyRestifyServer(kernel);
-server.setErrorConfig((app) => {
-    app.use((err, req, res, next) => {
-        console.error(err.stack);
-        res.status(500).send('Something broke!');
-    });
-});
-```
-
 ### `.build()`
 Attaches all registered controllers and middleware to the restify application. Returns the application instance.
 
@@ -102,7 +89,6 @@ Attaches all registered controllers and middleware to the restify application. R
 let server = new InversifyRestifyServer(kernel);
 server
     .setConfig(configFn)
-    .setErrorConfig(errorConfigFn)
     .build()
     .listen(3000, 'localhost', callback);
 ```
