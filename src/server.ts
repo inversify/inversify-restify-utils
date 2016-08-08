@@ -9,7 +9,6 @@ export class InversifyRestifyServer  {
     private kernel: inversify.interfaces.Kernel;
     private app: restify.Server = restify.createServer();
     private configFn: interfaces.ConfigFunction;
-    private errorConfigFn: interfaces.ConfigFunction;
 
     /**
      * Wrapper for the restify server.
@@ -34,19 +33,6 @@ export class InversifyRestifyServer  {
     }
 
     /**
-     * Sets the error handler configuration function to be applied to the application.
-     * Note that the error config function is not actually executed until a call to InversifyRestifyServer.build().
-     * 
-     * This method is chainable.
-     * 
-     * @param fn Function in which app-level error handlers can be registered.
-     */
-    public setErrorConfig(fn: interfaces.ConfigFunction): InversifyRestifyServer {
-        this.errorConfigFn = fn;
-        return this;
-    }
-
-    /**
      * Applies all routes and configuration to the server, returning the restify application.
      */
     public build(): restify.Server {
@@ -56,11 +42,6 @@ export class InversifyRestifyServer  {
         }
 
         this.registerControllers();
-
-        // register error handlers after controllers
-        if (this.errorConfigFn) {
-            this.errorConfigFn.apply(undefined, [this.app]);
-        }
 
         return this.app;
     }
