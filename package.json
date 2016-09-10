@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/chai": "^3.4.32",
     "@types/mocha": "^2.2.31",
+    "@types/node": "^6.0.38",
     "@types/restify": "^2.0.30",
     "@types/sinon": "^1.16.29",
     "@types/supertest": "^1.1.30",
