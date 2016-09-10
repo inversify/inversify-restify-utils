@@ -43,6 +43,7 @@ typings
 dist
 lib
 es
+dts
 
 type_definitions/inversify/*.js
 
