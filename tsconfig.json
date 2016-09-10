@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "lib": ["es6", "dom"],
-        "types": ["express", "inversify", "mocha", "reflect-metadata"],
+        "types": ["restify", "inversify", "mocha", "reflect-metadata"],
         "module": "commonjs",
         "moduleResolution": "node",
         "isolatedModules": false,
