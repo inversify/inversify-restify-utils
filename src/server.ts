@@ -1,3 +1,4 @@
+import * as inversify from "inversify";
 import * as restify from "restify";
 import interfaces from "./interfaces";
 import { TYPE, METADATA_KEY } from "./constants";
@@ -12,7 +13,7 @@ export class InversifyRestifyServer  {
 
     /**
      * Wrapper for the restify server.
-     * 
+     *
      * @param kernel Kernel loaded with all controllers and their dependencies.
      */
     constructor(kernel: inversify.interfaces.Kernel) {
@@ -20,11 +21,11 @@ export class InversifyRestifyServer  {
     }
 
     /**
-     * Sets the configuration function to be applied to the application. 
+     * Sets the configuration function to be applied to the application.
      * Note that the config function is not actually executed until a call to InversifyRestifyServer.build().
-     * 
+     *
      * This method is chainable.
-     * 
+     *
      * @param fn Function in which app-level middleware can be registered.
      */
     public setConfig(fn: interfaces.ConfigFunction): InversifyRestifyServer {
