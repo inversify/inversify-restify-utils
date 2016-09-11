@@ -14,6 +14,16 @@
 
 Some utilities for the development of restify application with Inversify.
 
+## Installation
+You can install `inversify-restify-utils` using npm:
+
+```
+$ npm install inversify inversify-restify-utils reflect-metadata --save
+```
+
+The `inversify-restify-utils` type definitions are included in the npm module and require TypeScript 2.0.
+Please refer to the [InversifyJS documentation](https://github.com/inversify/InversifyJS#installation) to learn more about the installation process.
+
 ## The Basics
 
 ### Step 1: Decorate your controllers
