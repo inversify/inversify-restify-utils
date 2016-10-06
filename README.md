@@ -75,6 +75,10 @@ let app = server.build();
 app.listen(3000);
 ```
 
+Restify ServerOptions can be provided as a second parameter to the InversifyRestifyServer constructor:
+
+```let server = new InversifyRestifyServer(kernel, { name: "my-server" });```
+
 ## InversifyRestifyServer
 A wrapper for a restify Application.
 
