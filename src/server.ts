@@ -8,7 +8,7 @@ import { TYPE, METADATA_KEY } from "./constants";
  */
 export class InversifyRestifyServer  {
     private kernel: inversify.interfaces.Kernel;
-    private app: restify.Server = restify.createServer();
+    private app: restify.Server;
     private configFn: interfaces.ConfigFunction;
 
     /**
@@ -16,8 +16,9 @@ export class InversifyRestifyServer  {
      *
      * @param kernel Kernel loaded with all controllers and their dependencies.
      */
-    constructor(kernel: inversify.interfaces.Kernel) {
+    constructor(kernel: inversify.interfaces.Kernel, opts?: restify.ServerOptions) {
         this.kernel = kernel;
+        this.app = restify.createServer(opts);
     }
 
     /**
