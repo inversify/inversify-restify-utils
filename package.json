@@ -16,7 +16,9 @@
   },
   "keywords": [
     "InversifyJS",
-    "restify"
+    "restify",
+    "dependency",
+    "injection"
   ],
   "author": "Cody Simms",
   "license": "MIT",
