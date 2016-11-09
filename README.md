@@ -48,28 +48,28 @@ export class FooController implements Controller {
 }
 ```
 
-### Step 2: Configure kernel and server
-Configure the inversify kernel in your composition root as usual.
+### Step 2: Configure container and server
+Configure the inversify container in your composition root as usual.
 
-Then, pass the kernel to the InversifyRestifyServer constructor. This will allow it to register all controllers and their dependencies from your kernel and attach them to the restify app.
+Then, pass the container to the InversifyRestifyServer constructor. This will allow it to register all controllers and their dependencies from your container and attach them to the restify app.
 Then just call server.build() to prepare your app.
 
 In order for the InversifyRestifyServer to find your controllers, you must bind them to the `TYPE.Controller` service identifier and tag the binding with the controller's name.
 The `Controller` interface exported by inversify-restify-utils is empty and solely for convenience, so feel free to implement your own if you want.
 
 ```ts
-import { Kernel } from 'inversify';
+import { Container } from 'inversify';
 import { InversifyRestifyServer, TYPE } from 'inversify-restify-utils';
 
-// set up kernel
-let kernel = new Kernel();
+// set up container
+let container = new Container();
 
 // note that you *must* bind your controllers to Controller 
-kernel.bind<Controller>(TYPE.Controller).to(FooController).whenTargetNamed('FooController');
-kernel.bind<FooService>('FooService').to(FooService);
+container.bind<Controller>(TYPE.Controller).to(FooController).whenTargetNamed('FooController');
+container.bind<FooService>('FooService').to(FooService);
 
 // create server
-let server = new InversifyRestifyServer(kernel);
+let server = new InversifyRestifyServer(container);
 
 let app = server.build();
 app.listen(3000);
@@ -77,7 +77,7 @@ app.listen(3000);
 
 Restify ServerOptions can be provided as a second parameter to the InversifyRestifyServer constructor:
 
-```let server = new InversifyRestifyServer(kernel, { name: "my-server" });```
+```let server = new InversifyRestifyServer(container, { name: "my-server" });```
 
 ## InversifyRestifyServer
 A wrapper for a restify Application.
@@ -88,7 +88,7 @@ Optional - exposes the restify application object for convenient loading of serv
 ```ts
 import * as morgan from 'morgan';
 // ...
-let server = new InversifyRestifyServer(kernel);
+let server = new InversifyRestifyServer(container);
 server.setConfig((app) => {
     var logger = morgan('combined')
     app.use(logger);
@@ -100,7 +100,7 @@ Attaches all registered controllers and middleware to the restify application. R
 
 ```ts
 // ...
-let server = new InversifyRestifyServer(kernel);
+let server = new InversifyRestifyServer(container);
 server
     .setConfig(configFn)
     .build()

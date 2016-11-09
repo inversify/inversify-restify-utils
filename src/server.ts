@@ -7,17 +7,17 @@ import { TYPE, METADATA_KEY } from "./constants";
  * Wrapper for the restify server.
  */
 export class InversifyRestifyServer  {
-    private kernel: inversify.interfaces.Kernel;
+    private container: inversify.interfaces.Container;
     private app: restify.Server;
     private configFn: interfaces.ConfigFunction;
 
     /**
      * Wrapper for the restify server.
      *
-     * @param kernel Kernel loaded with all controllers and their dependencies.
+     * @param container Container loaded with all controllers and their dependencies.
      */
-    constructor(kernel: inversify.interfaces.Kernel, opts?: restify.ServerOptions) {
-        this.kernel = kernel;
+    constructor(container: inversify.interfaces.Container, opts?: restify.ServerOptions) {
+        this.container = container;
         this.app = restify.createServer(opts);
     }
 
@@ -50,7 +50,7 @@ export class InversifyRestifyServer  {
 
     private registerControllers() {
 
-        let controllers: interfaces.Controller[] = this.kernel.getAll<interfaces.Controller>(TYPE.Controller);
+        let controllers: interfaces.Controller[] = this.container.getAll<interfaces.Controller>(TYPE.Controller);
 
         controllers.forEach((controller: interfaces.Controller) => {
 
@@ -79,7 +79,7 @@ export class InversifyRestifyServer  {
 
     private handlerFactory(controllerName: any, key: string): restify.RequestHandler {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
-            let result: any = this.kernel.getNamed(TYPE.Controller, controllerName)[key](req, res, next);
+            let result: any = this.container.getNamed(TYPE.Controller, controllerName)[key](req, res, next);
 
             // try to resolve promise
             if (result && result instanceof Promise) {
