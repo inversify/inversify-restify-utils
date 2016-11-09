@@ -8,7 +8,7 @@ import { expect } from "chai";
 // dependencies
 import * as inversify from "inversify";
 import * as restify from "restify";
-import { injectable, Kernel } from "inversify";
+import { injectable, Container } from "inversify";
 import interfaces from "../src/interfaces";
 import { InversifyRestifyServer } from "../src/server";
 import { Controller, Method, Get, Post, Put, Patch, Head, Delete } from "../src/decorators";
@@ -16,11 +16,11 @@ import { TYPE } from "../src/constants";
 
 describe("Integration Tests:", () => {
     let server: InversifyRestifyServer;
-    let kernel: inversify.interfaces.Kernel;
+    let container: inversify.interfaces.Container;
 
     beforeEach((done) => {
-        // refresh container and kernel
-        kernel = new Kernel();
+        // refresh container
+        container = new Container();
         done();
     });
 
@@ -36,9 +36,9 @@ describe("Integration Tests:", () => {
                     }));
                 }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel);
+            server = new InversifyRestifyServer(container);
             request(server.build())
                 .get("/")
                 .set("Accept", "text/plain")
@@ -55,9 +55,9 @@ describe("Integration Tests:", () => {
                     }));
                 }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel);
+            server = new InversifyRestifyServer(container);
             request(server.build())
                 .get("/")
                 .expect(500, done);
@@ -75,9 +75,9 @@ describe("Integration Tests:", () => {
                 @Head("/") public headTest(req: restify.Request, res: restify.Response) { res.send("HEAD"); }
                 @Delete("/") public deleteTest(req: restify.Request, res: restify.Response) { res.send("DELETE"); }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel);
+            server = new InversifyRestifyServer(container);
             let agent = request(server.build());
 
             let deleteFn = () => { agent.delete("/").set("Accept", "text/plain").expect(200, "DELETE", done); };
@@ -97,9 +97,9 @@ describe("Integration Tests:", () => {
             class TestController {
                 @Method("opts", "/") public getTest(req: restify.Request, res: restify.Response) { res.send("OPTIONS"); }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel);
+            server = new InversifyRestifyServer(container);
             request(server.build())
                 .options("/")
                 .set("Accept", "text/plain")
@@ -115,9 +115,9 @@ describe("Integration Tests:", () => {
             class TestController {
                 @Get("/") public getTest(req: restify.Request, res: restify.Response) { return result; }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel);
+            server = new InversifyRestifyServer(container);
             request(server.build())
                 .get("/")
                 .expect(200, JSON.stringify(result), done);
@@ -133,9 +133,9 @@ describe("Integration Tests:", () => {
             class TestController {
                 @Get("/") public getTest(req: restify.Request, res: restify.Response) { return result; }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel, { formatters: {
+            server = new InversifyRestifyServer(container, { formatters: {
                 "application/json": function formatFoo(req: restify.Request, res: restify.Response, body: any, cb: any) {
                     res.setHeader(customHeaderName, customHeaderValue);
                     return cb();
@@ -183,9 +183,9 @@ describe("Integration Tests:", () => {
             class TestController {
                 @Get("/", spyA, spyB, spyC) public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel);
+            server = new InversifyRestifyServer(container);
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
@@ -204,9 +204,9 @@ describe("Integration Tests:", () => {
             class TestController {
                 @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel);
+            server = new InversifyRestifyServer(container);
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
@@ -225,9 +225,9 @@ describe("Integration Tests:", () => {
             class TestController {
                 @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel);
+            server = new InversifyRestifyServer(container);
 
             server.setConfig((app) => {
                app.use(spyA);
@@ -253,9 +253,9 @@ describe("Integration Tests:", () => {
             class TestController {
                 @Get("/", spyC) public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
             }
-            kernel.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(kernel);
+            server = new InversifyRestifyServer(container);
 
             server.setConfig((app) => {
                app.use(spyA);
