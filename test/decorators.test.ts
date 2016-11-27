@@ -46,7 +46,7 @@ describe("Unit Test: Controller Decorators", () => {
         let metadata: interfaces.ControllerMethodMetadata = methodMetadata[0];
 
         expect(metadata.middleware).eql(middleware);
-        expect(metadata.path).eql(path);
+        expect(metadata.options).eql(path);
         expect(metadata.target.constructor).eql(TestController);
         expect(metadata.key).eql("test");
         expect(metadata.method).eql(method);

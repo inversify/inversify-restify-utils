@@ -67,11 +67,11 @@ export class InversifyRestifyServer  {
             if (controllerMetadata && methodMetadata) {
                 methodMetadata.forEach((metadata: interfaces.ControllerMethodMetadata) => {
                     let handler: restify.RequestHandler = this.handlerFactory(controllerMetadata.target.name, metadata.key);
-                    let fullPath = metadata.path;
+                    let routeOptions = typeof metadata.options === "string" ? { path: metadata.options } : metadata.options;
                     if (controllerMetadata.path !== "/") {
-                        fullPath = controllerMetadata.path + metadata.path;
+                        routeOptions.path = controllerMetadata.path + routeOptions.path;
                     }
-                    this.app[metadata.method](fullPath, [...controllerMetadata.middleware, ...metadata.middleware], handler);
+                    this.app[metadata.method](routeOptions, [...controllerMetadata.middleware, ...metadata.middleware], handler);
                 });
             }
         });
@@ -89,9 +89,9 @@ export class InversifyRestifyServer  {
                         res.send(value);
                     }
                 })
-                    .catch((error: any) => {
-                        next(new Error(error));
-                    });
+                .catch((error: any) => {
+                    next(new Error(error));
+                });
 
             } else if (result && !res.headersSent) {
                 res.send(result);
