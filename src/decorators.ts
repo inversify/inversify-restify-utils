@@ -9,37 +9,38 @@ export function Controller(path: string, ...middleware: restify.RequestHandler[]
     };
 }
 
-export function Get   (path: string, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
-    return Method("get",    path, ...middleware);
+export function Get(options: interfaces.RouteOptons, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
+    return Method("get", options, ...middleware);
 }
 
-export function Post  (path: string, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
-    return Method("post",   path, ...middleware);
+export function Post(options: interfaces.RouteOptons, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
+    return Method("post", options, ...middleware);
 }
 
-export function Put   (path: string, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
-    return Method("put",    path, ...middleware);
+export function Put(options: interfaces.RouteOptons, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
+    return Method("put", options, ...middleware);
 }
 
-export function Patch (path: string, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
-    return Method("patch",  path, ...middleware);
+export function Patch(options: interfaces.RouteOptons, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
+    return Method("patch", options, ...middleware);
 }
 
-export function Head  (path: string, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
-    return Method("head",   path, ...middleware);
+export function Head(options: interfaces.RouteOptons, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
+    return Method("head", options, ...middleware);
 }
 
-export function Delete(path: string, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
-    return Method("del", path, ...middleware);
+export function Delete(options: interfaces.RouteOptons, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
+    return Method("del", options, ...middleware);
 }
 
-export function Options(path: string, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
-    return Method("opts", path, ...middleware);
+export function Options(options: interfaces.RouteOptons, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
+    return Method("opts", options, ...middleware);
 }
 
-export function Method(method: string, path: string, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
+export function Method(
+        method: string, options: interfaces.RouteOptons, ...middleware: restify.RequestHandler[]): interfaces.HandlerDecorator {
     return function (target: any, key: string, value: any) {
-        let metadata: interfaces.ControllerMethodMetadata = {path, middleware, method, target, key};
+        let metadata: interfaces.ControllerMethodMetadata = {options, middleware, method, target, key};
         let metadataList: interfaces.ControllerMethodMetadata[] = [];
 
         if (!Reflect.hasOwnMetadata(METADATA_KEY.controllerMethod, target.constructor)) {
