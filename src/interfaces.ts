@@ -8,10 +8,10 @@ namespace interfaces {
         target: any;
     }
 
-    export type RouteOptons = string | { path: string } & Object;
+    export type RouteOptions = string | { path: string } & Object;
 
     export interface ControllerMethodMetadata {
-        options: RouteOptons;
+        options: RouteOptions;
         middleware: restify.RequestHandler[];
         target: any;
         method: string;
