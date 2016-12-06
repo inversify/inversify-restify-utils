@@ -1,5 +1,5 @@
 import * as restify from "restify";
-import interfaces from "./interfaces";
+import { interfaces } from "./interfaces";
 import { METADATA_KEY } from "./constants";
 
 export function Controller(path: string, ...middleware: restify.RequestHandler[]) {

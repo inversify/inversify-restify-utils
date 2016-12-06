@@ -1,15 +1,12 @@
 import "reflect-metadata";
 
-// test libraries
 import * as sinon from "sinon";
 import * as request from "supertest";
 import { expect } from "chai";
-
-// dependencies
 import * as inversify from "inversify";
 import * as restify from "restify";
 import { injectable, Container } from "inversify";
-import interfaces from "../src/interfaces";
+import { interfaces } from "../src/interfaces";
 import { InversifyRestifyServer } from "../src/server";
 import { Controller, Method, Get, Post, Put, Patch, Head, Delete } from "../src/decorators";
 import { TYPE } from "../src/constants";
