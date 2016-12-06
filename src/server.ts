@@ -79,22 +79,26 @@ export class InversifyRestifyServer  {
 
     private handlerFactory(controllerName: any, key: string): restify.RequestHandler {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
-            let result: any = this.container.getNamed(TYPE.Controller, controllerName)[key](req, res, next);
+            try {
+                let result: any = this.container.getNamed(TYPE.Controller, controllerName)[key](req, res, next);
 
-            // try to resolve promise
-            if (result && result instanceof Promise) {
+                // try to resolve promise
+                if (result && result instanceof Promise) {
 
-                result.then((value: any) => {
-                    if (value && !res.headersSent) {
-                        res.send(value);
-                    }
-                })
-                .catch((error: any) => {
-                    next(new Error(error));
-                });
+                    result.then((value: any) => {
+                        if (value && !res.headersSent) {
+                            res.send(value);
+                        }
+                    })
+                        .catch((error: any) => {
+                            next(new Error(error));
+                        });
 
-            } else if (result && !res.headersSent) {
-                res.send(result);
+                } else if (result && !res.headersSent) {
+                    res.send(result);
+                }
+            } catch (error) {
+                next(error);
             }
         };
     }
