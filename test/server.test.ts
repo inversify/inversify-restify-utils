@@ -1,8 +1,5 @@
-// test libraries
 import { expect } from "chai";
 import * as sinon from "sinon";
-
-// dependencies
 import * as restify from "restify";
 import { InversifyRestifyServer } from "../src/server";
 import { Controller, Method } from "../src/decorators";
@@ -53,6 +50,7 @@ describe("Unit Test: InversifyRestifyServer", () => {
 
         let routeTwo = app.router.routes.GET.find(route => route.spec.path === "/root/routeTwo");
         expect(routeTwo).not.to.be.undefined;
-        expect((<any>routeTwo.spec).additionalOptions).to.eq("test");
+        expect((<any>routeTwo).spec.additionalOptions).to.eq("test");
+
     });
 });

@@ -1,6 +1,6 @@
 import * as inversify from "inversify";
 import * as restify from "restify";
-import interfaces from "./interfaces";
+import { interfaces } from "./interfaces";
 import { TYPE, METADATA_KEY } from "./constants";
 
 /**
@@ -71,7 +71,7 @@ export class InversifyRestifyServer  {
                     if (controllerMetadata.path !== "/") {
                         routeOptions.path = controllerMetadata.path + routeOptions.path;
                     }
-                    this.app[metadata.method](routeOptions, [...controllerMetadata.middleware, ...metadata.middleware], handler);
+                    (this.app as any)[metadata.method](routeOptions, [...controllerMetadata.middleware, ...metadata.middleware], handler);
                 });
             }
         });
@@ -80,7 +80,7 @@ export class InversifyRestifyServer  {
     private handlerFactory(controllerName: any, key: string): restify.RequestHandler {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
             try {
-                let result: any = this.container.getNamed(TYPE.Controller, controllerName)[key](req, res, next);
+                let result: any = (this.container.getNamed(TYPE.Controller, controllerName) as any)[key](req, res, next);
 
                 // try to resolve promise
                 if (result && result instanceof Promise) {
