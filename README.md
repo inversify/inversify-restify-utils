@@ -32,12 +32,12 @@ The following example will declare a controller that responds to `GET /foo'.
 
 ```ts
 import * as restify from 'restify';
-import { Controller, Get } from 'inversify-restify-utils';
+import { Controller, Get, interfaces } from 'inversify-restify-utils';
 import { injectable, inject } from 'inversify';
 
 @Controller('/foo')
 @injectable()
-export class FooController implements Controller {
+export class FooController implements interfaces.Controller {
     
     constructor( @inject('FooService') private fooService: FooService ) {}
     
@@ -59,13 +59,13 @@ The `Controller` interface exported by inversify-restify-utils is empty and sole
 
 ```ts
 import { Container } from 'inversify';
-import { InversifyRestifyServer, TYPE } from 'inversify-restify-utils';
+import { interfaces, InversifyRestifyServer, TYPE } from 'inversify-restify-utils';
 
 // set up container
 let container = new Container();
 
 // note that you *must* bind your controllers to Controller 
-container.bind<Controller>(TYPE.Controller).to(FooController).whenTargetNamed('FooController');
+container.bind<interfaces.Controller>(TYPE.Controller).to(FooController).whenTargetNamed('FooController');
 container.bind<FooService>('FooService').to(FooService);
 
 // create server
