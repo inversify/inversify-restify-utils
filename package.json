@@ -46,7 +46,7 @@
     "run-sequence": "^1.2.0",
     "sinon": "^1.17.4",
     "source-map-support": "^0.4.0",
-    "supertest": "^2.0.0",
+    "supertest": "^3.0.0",
     "tslint": "^4.0.1",
     "typescript": "^2.1.1"
   },
