@@ -6,7 +6,7 @@ import { TYPE, METADATA_KEY } from "./constants";
 /**
  * Wrapper for the restify server.
  */
-export class InversifyRestifyServer  {
+export class InversifyRestifyServer {
     private container: inversify.interfaces.Container;
     private app: restify.Server;
     private configFn: interfaces.ConfigFunction;
@@ -68,8 +68,11 @@ export class InversifyRestifyServer  {
                 methodMetadata.forEach((metadata: interfaces.ControllerMethodMetadata) => {
                     let handler: restify.RequestHandler = this.handlerFactory(controllerMetadata.target.name, metadata.key);
                     let routeOptions = typeof metadata.options === "string" ? { path: metadata.options } : metadata.options;
-                    if (controllerMetadata.path !== "/") {
+                    if (typeof routeOptions.path === "string" && typeof controllerMetadata.path === "string"
+                        && controllerMetadata.path !== "/") {
                         routeOptions.path = controllerMetadata.path + routeOptions.path;
+                    } else if (routeOptions.path instanceof RegExp && controllerMetadata.path !== "/") {
+                        routeOptions.path = new RegExp(controllerMetadata.path + routeOptions.path.source);
                     }
                     (this.app as any)[metadata.method](routeOptions, [...controllerMetadata.middleware, ...metadata.middleware], handler);
                 });
@@ -90,9 +93,9 @@ export class InversifyRestifyServer  {
                         res.send(value);
                     }
                 })
-                .catch((error: any) => {
-                    next(new Error(error));
-                });
+                    .catch((error: any) => {
+                        next(new Error(error));
+                    });
 
             } else if (result && !res.headersSent) {
                 res.send(result);
