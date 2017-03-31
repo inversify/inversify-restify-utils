@@ -67,7 +67,7 @@ export class InversifyRestifyServer {
             if (controllerMetadata && methodMetadata) {
                 methodMetadata.forEach((metadata: interfaces.ControllerMethodMetadata) => {
                     let handler: restify.RequestHandler = this.handlerFactory(controllerMetadata.target.name, metadata.key);
-                    let routeOptions = typeof metadata.options === "string" ? { path: metadata.options } : metadata.options;
+                    let routeOptions: any = typeof metadata.options === "string" ? { path: metadata.options } : metadata.options;
                     if (typeof routeOptions.path === "string" && typeof controllerMetadata.path === "string"
                         && controllerMetadata.path !== "/") {
                         routeOptions.path = controllerMetadata.path + routeOptions.path;
