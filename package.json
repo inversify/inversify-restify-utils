@@ -30,7 +30,7 @@
     "@types/chai": "^3.4.32",
     "@types/mocha": "^2.2.31",
     "@types/node": "^8.0.9",
-    "@types/restify": "^2.0.30",
+    "@types/restify": "^4.3.5",
     "@types/sinon": "^2.1.0",
     "@types/supertest": "^2.0.0",
     "chai": "^3.5.0",
