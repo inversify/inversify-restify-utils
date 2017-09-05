@@ -79,6 +79,10 @@ Restify ServerOptions can be provided as a second parameter to the InversifyRest
 
 ```let server = new InversifyRestifyServer(container, { name: "my-server" });```
 
+Restify ServerOptions can be extended with `defaultRoot` where one can define a default path that will be prepended to all your controllers:
+
+```let server = new InversifyRestifyServer(container, { name: "my-server", defaultRoot: "/v1" });```
+
 ## InversifyRestifyServer
 A wrapper for a restify Application.
 

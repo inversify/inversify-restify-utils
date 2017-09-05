@@ -143,6 +143,30 @@ describe("Integration Tests:", () => {
                 .expect(customHeaderName, customHeaderValue)
                 .expect(200, done);
         });
+        
+        it("should allow server options with defaultRoot", (done) => {
+            let result = {"hello": "world"};
+            let customHeaderName = "custom-header-name";
+            let customHeaderValue = "custom-header-value";
+
+            @injectable()
+            @Controller("/")
+            class TestController {
+                @Get("/") public getTest(req: restify.Request, res: restify.Response) { return result; }
+            }
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+
+            server = new InversifyRestifyServer(container, { formatters: {
+                "application/json": function formatFoo(req: restify.Request, res: restify.Response, body: any, cb: any) {
+                    res.setHeader(customHeaderName, customHeaderValue);
+                    return cb();
+                }
+            }, defaultRoot: "/v1" });
+            request(server.build())
+                .get("/v1")
+                .expect(customHeaderName, customHeaderValue)
+                .expect(200, done);
+        });
     });
 
 
