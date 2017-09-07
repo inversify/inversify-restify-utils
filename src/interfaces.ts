@@ -29,6 +29,9 @@ namespace interfaces {
         (app: restify.Server): void;
     }
 
+    export interface ServerOptions extends restify.ServerOptions {
+      defaultRoot?: string;
+    }
 }
 
 export { interfaces };

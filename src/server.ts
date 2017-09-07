@@ -10,15 +10,20 @@ export class InversifyRestifyServer {
     private container: inversify.interfaces.Container;
     private app: restify.Server;
     private configFn: interfaces.ConfigFunction;
+    private defaultRoot: string | null = null;
 
     /**
      * Wrapper for the restify server.
      *
      * @param container Container loaded with all controllers and their dependencies.
      */
-    constructor(container: inversify.interfaces.Container, opts?: restify.ServerOptions) {
+    constructor(container: inversify.interfaces.Container, opts?: restify.ServerOptions | interfaces.ServerOptions) {
         this.container = container;
-        this.app = restify.createServer(opts);
+        this.app = restify.createServer(opts as restify.ServerOptions);
+        if (opts && opts.hasOwnProperty("defaultRoot") && 
+            typeof (opts as interfaces.ServerOptions).defaultRoot === "string") {
+            this.defaultRoot = (opts as interfaces.ServerOptions).defaultRoot as string;
+        }
     }
 
     /**
@@ -58,6 +63,12 @@ export class InversifyRestifyServer {
                 METADATA_KEY.controller,
                 controller.constructor
             );
+
+            if (this.defaultRoot !== null && typeof controllerMetadata.path === "string") {
+                controllerMetadata.path = this.defaultRoot + controllerMetadata.path;
+            } else if (this.defaultRoot !== null) {
+                controllerMetadata.path = this.defaultRoot;
+            }
 
             let methodMetadata: interfaces.ControllerMethodMetadata[] = Reflect.getOwnMetadata(
                 METADATA_KEY.controllerMethod,
