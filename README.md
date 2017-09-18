@@ -124,3 +124,53 @@ Registers the decorated controller method as a request handler for a particular 
 ### `@SHORTCUT(path, [middleware, ...])`
 
 Shortcut decorators which are simply wrappers for `@Method`. Right now these include `@Get`, `@Post`, `@Put`, `@Patch`, `@Head`, `@Delete`, and `@Options`. For anything more obscure, use `@Method` (Or make a PR :smile:).
+
+## Middleware
+Middleware can be either an instance of `restify.RequestHandler` or an InversifyJS service idenifier.
+
+The simplest way to use middleware is to define a `restify.RequestHandler` instance and pass that handler as decorator parameter.
+
+```ts
+// ...
+const loggingHandler = (req: restify.Request, res: restify.Response, next: restify.Next) => {
+  console.log(req);
+  next();
+};
+
+@Controller('/foo', loggingHandler)
+@injectable()
+export class FooController implements interfaces.Controller {
+    
+    constructor( @inject('FooService') private fooService: FooService ) {}
+    
+    @Get('/', loggingHandler)
+    private index(req: restify.Request): string {
+        return this.fooService.get(req.query.id);
+    }
+}
+```
+
+But if you wish to take full advantage of InversifyJS you can bind the same handler to your IOC container and pass the handler's service identifier to decorators.
+
+```ts
+// ...
+import { TYPES } from 'types';
+// ...
+const loggingHandler = (req: restify.Request, res: restify.Response, next: restify.Next) => {
+  console.log(req);
+  next();
+};
+container.bind<restify.RequestHandler>(TYPES.LoggingMiddleware).toConstantValue(loggingHandler);
+// ...
+@Controller('/foo', TYPES.LoggingMiddleware)
+@injectable()
+export class FooController implements interfaces.Controller {
+    
+    constructor( @inject('FooService') private fooService: FooService ) {}
+    
+    @Get('/', TYPES.LoggingMiddleware)
+    private index(req: restify.Request): string {
+        return this.fooService.get(req.query.id);
+    }
+}
+```

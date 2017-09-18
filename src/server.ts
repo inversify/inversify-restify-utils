@@ -76,17 +76,29 @@ export class InversifyRestifyServer {
             );
 
             if (controllerMetadata && methodMetadata) {
+                let controllerMiddleware = this.resolveMiddleware(...controllerMetadata.middleware);
                 methodMetadata.forEach((metadata: interfaces.ControllerMethodMetadata) => {
                     let handler: restify.RequestHandler = this.handlerFactory(controllerMetadata.target.name, metadata.key);
                     let routeOptions: any = typeof metadata.options === "string" ? { path: metadata.options } : metadata.options;
+                    let routeMiddleware = this.resolveMiddleware(...metadata.middleware);
                     if (typeof routeOptions.path === "string" && typeof controllerMetadata.path === "string"
                         && controllerMetadata.path !== "/") {
                         routeOptions.path = controllerMetadata.path + routeOptions.path;
                     } else if (routeOptions.path instanceof RegExp && controllerMetadata.path !== "/") {
                         routeOptions.path = new RegExp(controllerMetadata.path + routeOptions.path.source);
                     }
-                    (this.app as any)[metadata.method](routeOptions, [...controllerMetadata.middleware, ...metadata.middleware], handler);
+                    (this.app as any)[metadata.method](routeOptions, [...controllerMiddleware, ...routeMiddleware], handler);
                 });
+            }
+        });
+    }
+
+    private resolveMiddleware(...middleware: interfaces.Middleware[]): restify.RequestHandler[] {
+        return middleware.map(middlewareItem => {
+            try {
+                return this.container.get<restify.RequestHandler>(middlewareItem);
+            } catch (_) {
+                return middlewareItem as restify.RequestHandler;
             }
         });
     }

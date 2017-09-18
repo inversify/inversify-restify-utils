@@ -292,5 +292,85 @@ describe("Integration Tests:", () => {
                     done();
                 });
         });
+
+        it("should resolve controller-level middleware", (done) => {
+            const symbolId = Symbol("spyA");
+            const strId = "spyB";
+
+            @injectable()
+            @Controller("/", symbolId, strId)
+            class TestController {
+                @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+            }
+
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<restify.RequestHandler>(symbolId).toConstantValue(spyA);
+            container.bind<restify.RequestHandler>(strId).toConstantValue(spyB);
+
+            server = new InversifyRestifyServer(container);
+
+            request(server.build())
+                .get("/")
+                .expect(200, "GET", function() { 
+                    expect(spyA.calledOnce).to.be.true;
+                    expect(spyB.calledOnce).to.be.true;
+                    expect(result).to.equal("ab");
+                    done();
+                });
+        });
+
+        it("should resolve method-level middleware", (done) => {
+            const symbolId = Symbol("spyA");
+            const strId = "spyB";
+
+            @injectable()
+            @Controller("/")
+            class TestController {
+                @Get("/", symbolId, strId)
+                public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+            }
+
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<restify.RequestHandler>(symbolId).toConstantValue(spyA);
+            container.bind<restify.RequestHandler>(strId).toConstantValue(spyB);
+
+            server = new InversifyRestifyServer(container);
+
+            request(server.build())
+                .get("/")
+                .expect(200, "GET", function() {
+                    expect(spyA.calledOnce).to.be.true;
+                    expect(spyB.calledOnce).to.be.true;
+                    expect(result).to.equal("ab");
+                    done();
+                });
+        });
+
+        it("should compose controller- and method-level middleware", (done) => {
+            const symbolId = Symbol("spyA");
+            const strId = "spyB";
+
+            @injectable()
+            @Controller("/", symbolId)
+            class TestController {
+                @Get("/", strId)
+                public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+            }
+
+            container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
+            container.bind<restify.RequestHandler>(symbolId).toConstantValue(spyA);
+            container.bind<restify.RequestHandler>(strId).toConstantValue(spyB);
+
+            server = new InversifyRestifyServer(container);
+
+            request(server.build())
+                .get("/")
+                .expect(200, "GET", function() {
+                    expect(spyA.calledOnce).to.be.true;
+                    expect(spyB.calledOnce).to.be.true;
+                    expect(result).to.equal("ab");
+                    done();
+                });
+        });
     });
 });
