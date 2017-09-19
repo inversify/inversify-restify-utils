@@ -51,6 +51,6 @@
     "typescript": "^2.2.0"
   },
   "dependencies": {
-    "restify": "^5.0.1"
+    "restify": "^6.0.0"
   }
 }
