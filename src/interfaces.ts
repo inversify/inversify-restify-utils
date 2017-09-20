@@ -1,10 +1,13 @@
 import * as restify from "restify";
+import { interfaces as inversifyInterfaces } from "inversify";
 
 namespace interfaces {
 
+    export type Middleware = (inversifyInterfaces.ServiceIdentifier<any> | restify.RequestHandler);
+      
     export interface ControllerMetadata {
         path: string;
-        middleware: restify.RequestHandler[];
+        middleware: Middleware[];
         target: any;
     }
 
@@ -13,7 +16,7 @@ namespace interfaces {
 
     export interface ControllerMethodMetadata {
         options: RouteOptions;
-        middleware: restify.RequestHandler[];
+        middleware: Middleware[];
         target: any;
         method: string;
         key: string;
@@ -29,6 +32,9 @@ namespace interfaces {
         (app: restify.Server): void;
     }
 
+    export interface ServerOptions extends restify.ServerOptions {
+      defaultRoot?: string;
+    }
 }
 
 export { interfaces };

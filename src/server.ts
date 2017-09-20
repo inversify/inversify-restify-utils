@@ -10,15 +10,20 @@ export class InversifyRestifyServer {
     private container: inversify.interfaces.Container;
     private app: restify.Server;
     private configFn: interfaces.ConfigFunction;
+    private defaultRoot: string | null = null;
 
     /**
      * Wrapper for the restify server.
      *
      * @param container Container loaded with all controllers and their dependencies.
      */
-    constructor(container: inversify.interfaces.Container, opts?: restify.ServerOptions) {
+    constructor(container: inversify.interfaces.Container, opts?: restify.ServerOptions | interfaces.ServerOptions) {
         this.container = container;
-        this.app = restify.createServer(opts);
+        this.app = restify.createServer(opts as restify.ServerOptions);
+        if (opts && opts.hasOwnProperty("defaultRoot") && 
+            typeof (opts as interfaces.ServerOptions).defaultRoot === "string") {
+            this.defaultRoot = (opts as interfaces.ServerOptions).defaultRoot as string;
+        }
     }
 
     /**
@@ -59,23 +64,41 @@ export class InversifyRestifyServer {
                 controller.constructor
             );
 
+            if (this.defaultRoot !== null && typeof controllerMetadata.path === "string") {
+                controllerMetadata.path = this.defaultRoot + controllerMetadata.path;
+            } else if (this.defaultRoot !== null) {
+                controllerMetadata.path = this.defaultRoot;
+            }
+
             let methodMetadata: interfaces.ControllerMethodMetadata[] = Reflect.getOwnMetadata(
                 METADATA_KEY.controllerMethod,
                 controller.constructor
             );
 
             if (controllerMetadata && methodMetadata) {
+                let controllerMiddleware = this.resolveMiddleware(...controllerMetadata.middleware);
                 methodMetadata.forEach((metadata: interfaces.ControllerMethodMetadata) => {
                     let handler: restify.RequestHandler = this.handlerFactory(controllerMetadata.target.name, metadata.key);
                     let routeOptions: any = typeof metadata.options === "string" ? { path: metadata.options } : metadata.options;
+                    let routeMiddleware = this.resolveMiddleware(...metadata.middleware);
                     if (typeof routeOptions.path === "string" && typeof controllerMetadata.path === "string"
                         && controllerMetadata.path !== "/") {
                         routeOptions.path = controllerMetadata.path + routeOptions.path;
                     } else if (routeOptions.path instanceof RegExp && controllerMetadata.path !== "/") {
                         routeOptions.path = new RegExp(controllerMetadata.path + routeOptions.path.source);
                     }
-                    (this.app as any)[metadata.method](routeOptions, [...controllerMetadata.middleware, ...metadata.middleware], handler);
+                    (this.app as any)[metadata.method](routeOptions, [...controllerMiddleware, ...routeMiddleware], handler);
                 });
+            }
+        });
+    }
+
+    private resolveMiddleware(...middleware: interfaces.Middleware[]): restify.RequestHandler[] {
+        return middleware.map(middlewareItem => {
+            try {
+                return this.container.get<restify.RequestHandler>(middlewareItem);
+            } catch (_) {
+                return middlewareItem as restify.RequestHandler;
             }
         });
     }

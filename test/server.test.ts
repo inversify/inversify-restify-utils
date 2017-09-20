@@ -55,7 +55,41 @@ describe("Unit Test: InversifyRestifyServer", () => {
         expect(routeTwo).not.to.be.undefined;
         expect((<any>routeTwo).spec.options).to.eq("test");
 
-        let routeThree = app.router.routes.GET.find(route => route.spec.path === "/root/routeThree");
+          let routeThree = app.router.routes.GET.find(route => route.spec.path === "/root/routeThree");
+        expect(routeThree).not.to.be.undefined;
+
+    });
+    
+    it("should generate routes for controller methods using defaultRoot", () => {
+
+        @injectable()
+        @Controller("/root")
+        class TestController {
+            @Method("get", "/routeOne")
+            public routeOne() { return; }
+
+            @Method("get", { options: "test", path: "/routeTwo" })
+            public routeTwo() { return; }
+
+            @Method("get", { path: "/routeThree" })
+            public routeThree() { return; }
+        }
+
+        let container = new Container();
+        container.bind(TYPE.Controller).to(TestController);
+        let server = new InversifyRestifyServer(container, {
+            defaultRoot: "/v1"
+        });
+        let app = server.build();
+
+        let routeOne = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeOne");
+        expect(routeOne).not.to.be.undefined;
+
+        let routeTwo = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeTwo");
+        expect(routeTwo).not.to.be.undefined;
+        expect((<any>routeTwo).spec.options).to.eq("test");
+
+          let routeThree = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeThree");
         expect(routeThree).not.to.be.undefined;
 
     });
