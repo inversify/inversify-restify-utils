@@ -21,11 +21,11 @@ describe("Unit Test: InversifyRestifyServer", () => {
 
         server.setConfig(configFn);
 
-        expect(configFn.called).to.be.false;
+        expect(configFn.called).to.eq(false);
 
         server.build();
 
-        expect(configFn.calledOnce).to.be.true;
+        expect(configFn.calledOnce).to.eq(true);
     });
 
     it("should generate routes for controller methods", () => {
@@ -49,17 +49,17 @@ describe("Unit Test: InversifyRestifyServer", () => {
         let app = server.build();
 
         let routeOne = app.router.routes.GET.find(route => route.spec.path === "/root/routeOne");
-        expect(routeOne).not.to.be.undefined;
+        expect(routeOne).not.to.eq(undefined);
 
         let routeTwo = app.router.routes.GET.find(route => route.spec.path === "/root/routeTwo");
-        expect(routeTwo).not.to.be.undefined;
+        expect(routeTwo).not.to.eq(undefined);
         expect((<any>routeTwo).spec.options).to.eq("test");
 
           let routeThree = app.router.routes.GET.find(route => route.spec.path === "/root/routeThree");
-        expect(routeThree).not.to.be.undefined;
+        expect(routeThree).not.to.eq(undefined);
 
     });
-    
+
     it("should generate routes for controller methods using defaultRoot", () => {
 
         @injectable()
@@ -77,20 +77,23 @@ describe("Unit Test: InversifyRestifyServer", () => {
 
         let container = new Container();
         container.bind(TYPE.Controller).to(TestController);
+
         let server = new InversifyRestifyServer(container, {
             defaultRoot: "/v1"
         });
+
         let app = server.build();
 
         let routeOne = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeOne");
-        expect(routeOne).not.to.be.undefined;
+        expect(routeOne).not.to.eq(undefined);
 
         let routeTwo = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeTwo");
-        expect(routeTwo).not.to.be.undefined;
+        expect(routeTwo).not.to.eq(undefined);
         expect((<any>routeTwo).spec.options).to.eq("test");
 
-          let routeThree = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeThree");
-        expect(routeThree).not.to.be.undefined;
+        let routeThree = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeThree");
+        expect(routeThree).not.eq(undefined);
 
     });
+
 });

@@ -1,3 +1,4 @@
+
 {
   "rules": {
     "class-name": true,
@@ -34,7 +35,6 @@
     "no-switch-case-fall-through": false,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
-    "no-use-before-declare": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": true,
     "one-line": [true,

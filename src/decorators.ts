@@ -37,8 +37,11 @@ export function Options(options: interfaces.RouteOptions, ...middleware: interfa
 }
 
 export function Method(
-        method: string, options: interfaces.RouteOptions, ...middleware: interfaces.Middleware[]): interfaces.HandlerDecorator {
-    return function (target: any, key: string, value: any) {
+    method: string,
+    options: interfaces.RouteOptions,
+    ...middleware: interfaces.Middleware[]
+): interfaces.HandlerDecorator {
+    return function (target: any, key: string) {
         let metadata: interfaces.ControllerMethodMetadata = {options, middleware, method, target, key};
         let metadataList: interfaces.ControllerMethodMetadata[] = [];
 
