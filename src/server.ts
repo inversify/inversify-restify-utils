@@ -17,11 +17,14 @@ export class InversifyRestifyServer {
      *
      * @param container Container loaded with all controllers and their dependencies.
      */
-    constructor(container: inversify.interfaces.Container, opts?: restify.ServerOptions | interfaces.ServerOptions) {
+    constructor(container: inversify.interfaces.Container, opts?: (restify.ServerOptions & interfaces.ServerOptions)) {
         this.container = container;
         this.app = restify.createServer(opts as restify.ServerOptions);
-        if (opts && opts.hasOwnProperty("defaultRoot") && 
-            typeof (opts as interfaces.ServerOptions).defaultRoot === "string") {
+        if (
+            opts &&
+            opts.hasOwnProperty("defaultRoot") &&
+            typeof (opts as interfaces.ServerOptions).defaultRoot === "string"
+        ) {
             this.defaultRoot = (opts as interfaces.ServerOptions).defaultRoot as string;
         }
     }

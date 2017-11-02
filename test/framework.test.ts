@@ -27,7 +27,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/")
             class TestController {
-                @Get("/") public getTest(req: restify.Request, res: restify.Response) {
+                @Get("/") public getTest() {
                     return new Promise(((resolve) => {
                         setTimeout(resolve, 100, "GET");
                     }));
@@ -46,7 +46,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/")
             class TestController {
-                @Get("/") public getTest(req: restify.Request, res: restify.Response) {
+                @Get("/") public getTest() {
                     return new Promise(((resolve, reject) => {
                         setTimeout(reject, 100, "GET");
                     }));
@@ -132,18 +132,23 @@ describe("Integration Tests:", () => {
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(container, { formatters: {
-                "application/json": function formatFoo(req: restify.Request, res: restify.Response, body: any, cb: any) {
-                    res.setHeader(customHeaderName, customHeaderValue);
-                    return cb();
+            server = new InversifyRestifyServer(
+                container,
+                {
+                    formatters: {
+                        "application/json": (req: restify.Request, res: restify.Response, body: any) => {
+                            res.setHeader(customHeaderName, customHeaderValue);
+                            return null;
+                        }
+                    }
                 }
-            } });
+            );
             request(server.build())
                 .get("/")
                 .expect(customHeaderName, customHeaderValue)
                 .expect(200, done);
         });
-        
+
         it("should allow server options with defaultRoot", (done) => {
             let result = {"hello": "world"};
             let customHeaderName = "custom-header-name";
@@ -156,12 +161,18 @@ describe("Integration Tests:", () => {
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
-            server = new InversifyRestifyServer(container, { formatters: {
-                "application/json": function formatFoo(req: restify.Request, res: restify.Response, body: any, cb: any) {
-                    res.setHeader(customHeaderName, customHeaderValue);
-                    return cb();
+            server = new InversifyRestifyServer(
+                container,
+                {
+                    defaultRoot: "/v1",
+                    formatters: {
+                        "application/json": (req: restify.Request, res: restify.Response, body: any) => {
+                            res.setHeader(customHeaderName, customHeaderValue);
+                            return null;
+                        }
+                    }
                 }
-            }, defaultRoot: "/v1" });
+            );
             request(server.build())
                 .get("/v1")
                 .expect(customHeaderName, customHeaderValue)
@@ -210,9 +221,9 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
-                    expect(spyA.calledOnce).to.be.true;
-                    expect(spyB.calledOnce).to.be.true;
-                    expect(spyC.calledOnce).to.be.true;
+                    expect(spyA.calledOnce).to.eq(true);
+                    expect(spyB.calledOnce).to.eq(true);
+                    expect(spyC.calledOnce).to.eq(true);
                     expect(result).to.equal("abc");
                     done();
                 });
@@ -231,9 +242,9 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
-                    expect(spyA.calledOnce).to.be.true;
-                    expect(spyB.calledOnce).to.be.true;
-                    expect(spyC.calledOnce).to.be.true;
+                    expect(spyA.calledOnce).to.eq(true);
+                    expect(spyB.calledOnce).to.eq(true);
+                    expect(spyC.calledOnce).to.eq(true);
                     expect(result).to.equal("abc");
                     done();
                 });
@@ -259,9 +270,9 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
-                    expect(spyA.calledOnce).to.be.true;
-                    expect(spyB.calledOnce).to.be.true;
-                    expect(spyC.calledOnce).to.be.true;
+                    expect(spyA.calledOnce).to.eq(true);
+                    expect(spyB.calledOnce).to.eq(true);
+                    expect(spyC.calledOnce).to.eq(true);
                     expect(result).to.equal("abc");
                     done();
                 });
@@ -285,9 +296,9 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
-                    expect(spyA.calledOnce).to.be.true;
-                    expect(spyB.calledOnce).to.be.true;
-                    expect(spyC.calledOnce).to.be.true;
+                    expect(spyA.calledOnce).to.eq(true);
+                    expect(spyB.calledOnce).to.eq(true);
+                    expect(spyC.calledOnce).to.eq(true);
                     expect(result).to.equal("abc");
                     done();
                 });
@@ -311,9 +322,9 @@ describe("Integration Tests:", () => {
 
             request(server.build())
                 .get("/")
-                .expect(200, "GET", function() { 
-                    expect(spyA.calledOnce).to.be.true;
-                    expect(spyB.calledOnce).to.be.true;
+                .expect(200, "GET", function() {
+                    expect(spyA.calledOnce).to.eq(true);
+                    expect(spyB.calledOnce).to.eq(true);
                     expect(result).to.equal("ab");
                     done();
                 });
@@ -339,8 +350,8 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function() {
-                    expect(spyA.calledOnce).to.be.true;
-                    expect(spyB.calledOnce).to.be.true;
+                    expect(spyA.calledOnce).to.eq(true);
+                    expect(spyB.calledOnce).to.eq(true);
                     expect(result).to.equal("ab");
                     done();
                 });
@@ -366,8 +377,8 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function() {
-                    expect(spyA.calledOnce).to.be.true;
-                    expect(spyB.calledOnce).to.be.true;
+                    expect(spyA.calledOnce).to.eq(true);
+                    expect(spyB.calledOnce).to.eq(true);
                     expect(result).to.equal("ab");
                     done();
                 });

@@ -4,7 +4,7 @@ import { interfaces as inversifyInterfaces } from "inversify";
 namespace interfaces {
 
     export type Middleware = (inversifyInterfaces.ServiceIdentifier<any> | restify.RequestHandler);
-      
+
     export interface ControllerMetadata {
         path: string;
         middleware: Middleware[];
