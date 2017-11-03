@@ -51,6 +51,6 @@
     "typescript": "2.6.1"
   },
   "dependencies": {
-    "restify": "6.2.3"
+    "restify": "6.3.1"
   }
 }
