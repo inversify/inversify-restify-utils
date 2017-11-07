@@ -31,7 +31,7 @@ To use a class as a "controller" for your restify app, simply add the `@Controll
 The following example will declare a controller that responds to `GET /foo'.
 
 ```ts
-import * as restify from 'restify';
+import { Request } from 'restify';
 import { Controller, Get, interfaces } from 'inversify-restify-utils';
 import { injectable, inject } from 'inversify';
 
@@ -42,7 +42,7 @@ export class FooController implements interfaces.Controller {
     constructor( @inject('FooService') private fooService: FooService ) {}
     
     @Get('/')
-    private index(req: restify.Request): string {
+    private index(req: Request): string {
         return this.fooService.get(req.query.id);
     }
 }
