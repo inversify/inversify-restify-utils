@@ -34,9 +34,11 @@
     "@types/sinon": "2.3.7",
     "@types/supertest": "2.0.3",
     "chai": "4.1.2",
+    "del": "^3.0.0",
     "gulp": "3.9.1",
     "gulp-istanbul": "1.1.2",
     "gulp-mocha": "3.0.1",
+    "gulp-sourcemaps": "^2.6.1",
     "gulp-tslint": "8.1.2",
     "gulp-typescript": "3.2.3",
     "inversify": "4.5.1",
@@ -51,6 +53,7 @@
     "typescript": "2.6.1"
   },
   "dependencies": {
+    "gulp-debug": "^3.1.0",
     "restify": "6.3.2"
   }
 }

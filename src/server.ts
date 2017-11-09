@@ -117,6 +117,7 @@ export class InversifyRestifyServer {
                 result.then((value: any) => {
                     if (value && !res.headersSent) {
                         res.send(value);
+                        next();
                     }
                 })
                     .catch((error: any) => {
@@ -125,6 +126,7 @@ export class InversifyRestifyServer {
 
             } else if (result && !res.headersSent) {
                 res.send(result);
+                next();
             }
 
         };
