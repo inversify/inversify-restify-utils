@@ -8,7 +8,24 @@ var gulp = require("gulp"),
     tsc = require("gulp-typescript"),
     runSequence = require("run-sequence"),
     mocha = require("gulp-mocha"),
-    istanbul = require("gulp-istanbul");
+    istanbul = require("gulp-istanbul"),
+    sourcemaps = require("gulp-sourcemaps"),
+    del = require('del');
+
+//******************************************************************************
+//* CLEAN
+//******************************************************************************
+gulp.task("clean", function () {
+    return del([
+        "src/**/*.js",
+        "test/**/*.test.js",
+        "src/*.js",
+        "test/*.test.js",
+        "lib",
+        "es",
+        "amd"
+    ]);
+});
 
 //******************************************************************************
 //* LINT
@@ -86,25 +103,36 @@ var tstProject = tsc.createProject("tsconfig.json");
 gulp.task("build-src", function() {
     return gulp.src([
             "src/**/*.ts"
-        ])
+    ])
+        .pipe(sourcemaps.init())
         .pipe(tstProject())
         .on("error", function(err) {
             process.exit(1);
         })
-        .js.pipe(gulp.dest("src/"));
+        .js.pipe(sourcemaps.write(".", {
+            sourceRoot: function (file) {
+                return file.cwd + '/src';
+            }
+        }))
+        .pipe(gulp.dest("src/"));
 });
 
-var tsTestProject = tsc.createProject("tsconfig.json", { rootDir: "./" });
-
+var tsTestProject = tsc.createProject("tsconfig.json");
 gulp.task("build-test", function() {
     return gulp.src([
             "test/**/*.ts"
         ])
+        .pipe(sourcemaps.init())
         .pipe(tsTestProject())
         .on("error", function(err) {
             process.exit(1);
         })
-        .js.pipe(gulp.dest("./test/"));
+        .js.pipe(sourcemaps.write(".", {
+            sourceRoot: function (file) {
+                return file.cwd + '/test';
+            }
+        }))
+        .pipe(gulp.dest("test/"));;
 });
 
 gulp.task("mocha", function() {
@@ -142,6 +170,7 @@ gulp.task("build", function(cb) {
 //******************************************************************************
 gulp.task("default", function(cb) {
     runSequence(
+        "clean",
         "build",
         "test",
         cb);

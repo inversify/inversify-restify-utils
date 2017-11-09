@@ -11,7 +11,7 @@
         "emitDecoratorMetadata": true,
         "noImplicitAny": true,
         "preserveConstEnums": true,
-        "outDir": "lib",
+        "removeComments": true,
         "suppressImplicitAnyIndexErrors": false,
         "noResolve": false,
         "noUnusedParameters": false,
