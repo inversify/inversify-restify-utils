@@ -1,5 +1,5 @@
 const TYPE = {
-    Controller: Symbol("Controller")
+    Controller: Symbol.for("Controller")
 };
 
 const METADATA_KEY = {

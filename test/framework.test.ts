@@ -305,7 +305,7 @@ describe("Integration Tests:", () => {
         });
 
         it("should resolve controller-level middleware", (done) => {
-            const symbolId = Symbol("spyA");
+            const symbolId = Symbol.for("spyA");
             const strId = "spyB";
 
             @injectable()
@@ -331,7 +331,7 @@ describe("Integration Tests:", () => {
         });
 
         it("should resolve method-level middleware", (done) => {
-            const symbolId = Symbol("spyA");
+            const symbolId = Symbol.for("spyA");
             const strId = "spyB";
 
             @injectable()
@@ -358,7 +358,7 @@ describe("Integration Tests:", () => {
         });
 
         it("should compose controller- and method-level middleware", (done) => {
-            const symbolId = Symbol("spyA");
+            const symbolId = Symbol.for("spyA");
             const strId = "spyB";
 
             @injectable()
