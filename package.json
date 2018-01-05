@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/inversify/inversify-restify-utils#readme",
   "devDependencies": {
-    "@types/chai": "4.0.10",
+    "@types/chai": "4.1.0",
     "@types/mocha": "2.2.46",
     "@types/node": "8.5.7",
     "@types/restify": "5.0.7",
