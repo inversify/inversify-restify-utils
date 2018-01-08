@@ -29,7 +29,7 @@
   "devDependencies": {
     "@types/chai": "4.1.0",
     "@types/mocha": "2.2.46",
-    "@types/node": "8.5.7",
+    "@types/node": "8.5.8",
     "@types/restify": "5.0.7",
     "@types/sinon": "4.1.2",
     "@types/supertest": "2.0.4",
