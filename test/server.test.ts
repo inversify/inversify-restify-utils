@@ -60,7 +60,7 @@ describe("Unit Test: InversifyRestifyServer", () => {
 
     });
 
-    it("should generate routes for controller methods using defaultRoot", () => {
+    it.only("should generate routes for controller methods using defaultRoot", () => {
 
         @injectable()
         @Controller("/root")
@@ -84,14 +84,16 @@ describe("Unit Test: InversifyRestifyServer", () => {
 
         let app = server.build();
 
-        let routeOne = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeOne");
+        let routes = (<any>Object).values(app.router._registry._routes);
+
+        let routeOne = routes.find((route: any) => route.path === "/v1/root/routeOne" && route.method === "GET");
         expect(routeOne).not.to.eq(undefined);
 
-        let routeTwo = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeTwo");
+        let routeTwo = routes.find((route: any) => route.path === "/v1/root/routeTwo" && route.method === "GET");
         expect(routeTwo).not.to.eq(undefined);
         expect((<any>routeTwo).spec.options).to.eq("test");
 
-        let routeThree = app.router.routes.GET.find(route => route.spec.path === "/v1/root/routeThree");
+        let routeThree = routes.find((route: any) => route.path === "/v1/root/routeThree" && route.method === "GET");
         expect(routeThree).not.eq(undefined);
 
     });
