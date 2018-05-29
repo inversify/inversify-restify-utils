@@ -2,7 +2,12 @@
     "compilerOptions": {
         "target": "es5",
         "lib": ["es6", "dom"],
-        "types": ["restify", "inversify", "mocha", "reflect-metadata"],
+        "typeRoots": [ "./types", "./node_modules/@types"],
+        "types": ["inversify", "mocha", "reflect-metadata"],
+        "baseUrl": ".",
+        "paths": {
+          "*": ["./types/*"],
+        },
         "module": "commonjs",
         "moduleResolution": "node",
         "isolatedModules": false,
