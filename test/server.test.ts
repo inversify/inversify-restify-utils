@@ -48,19 +48,21 @@ describe("Unit Test: InversifyRestifyServer", () => {
         let server = new InversifyRestifyServer(container);
         let app = server.build();
 
-        let routeOne = app.router.routes.GET.find(route => route.spec.path === "/root/routeOne");
+        let routes = (<any>Object).values(app.router.getRoutes());
+
+        let routeOne = routes.find((route: any) => route.path === "/root/routeOne" && route.method === "GET");
         expect(routeOne).not.to.eq(undefined);
 
-        let routeTwo = app.router.routes.GET.find(route => route.spec.path === "/root/routeTwo");
+        let routeTwo = routes.find((route: any) => route.path === "/root/routeTwo" && route.method === "GET");
         expect(routeTwo).not.to.eq(undefined);
         expect((<any>routeTwo).spec.options).to.eq("test");
 
-          let routeThree = app.router.routes.GET.find(route => route.spec.path === "/root/routeThree");
+        let routeThree = routes.find((route: any) => route.path === "/root/routeThree" && route.method === "GET");
         expect(routeThree).not.to.eq(undefined);
 
     });
 
-    it.only("should generate routes for controller methods using defaultRoot", () => {
+    it("should generate routes for controller methods using defaultRoot", () => {
 
         @injectable()
         @Controller("/root")
@@ -84,7 +86,7 @@ describe("Unit Test: InversifyRestifyServer", () => {
 
         let app = server.build();
 
-        let routes = (<any>Object).values(app.router._registry._routes);
+        let routes = (<any>Object).values(app.router.getRoutes());
 
         let routeOne = routes.find((route: any) => route.path === "/v1/root/routeOne" && route.method === "GET");
         expect(routeOne).not.to.eq(undefined);

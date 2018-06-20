@@ -18,6 +18,11 @@ export class InversifyRestifyServer {
      * @param container Container loaded with all controllers and their dependencies.
      */
     constructor(container: inversify.interfaces.Container, opts?: (restify.ServerOptions & interfaces.ServerOptions)) {
+        opts = {
+            ignoreTrailingSlash : true,
+            ...opts
+        };
+
         this.container = container;
         this.app = restify.createServer(opts as restify.ServerOptions);
         if (
@@ -86,7 +91,8 @@ export class InversifyRestifyServer {
                     let routeMiddleware = this.resolveMiddleware(...metadata.middleware);
                     if (typeof routeOptions.path === "string" && typeof controllerMetadata.path === "string"
                         && controllerMetadata.path !== "/") {
-                        routeOptions.path = controllerMetadata.path + routeOptions.path;
+                        routeOptions.path = routeOptions.path === "/" ?
+                            controllerMetadata.path : controllerMetadata.path + routeOptions.path;
                     } else if (routeOptions.path instanceof RegExp && controllerMetadata.path !== "/") {
                         routeOptions.path = new RegExp(controllerMetadata.path + routeOptions.path.source);
                     }
