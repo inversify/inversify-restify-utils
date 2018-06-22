@@ -1,6 +1,6 @@
 {
   "name": "inversify-restify-utils",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Some utilities for the development of restify applications with Inversify",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
@@ -29,10 +29,10 @@
   "devDependencies": {
     "@types/bunyan": "^1.8.4",
     "@types/chai": "4.1.4",
-    "@types/mocha": "5.2.2",
-    "@types/node": "10.3.3",
+    "@types/mocha": "5.2.3",
+    "@types/node": "10.3.4",
     "@types/restify": "^7.2.0",
-    "@types/sinon": "4.3.3",
+    "@types/sinon": "5.0.1",
     "@types/spdy": "^3.4.4",
     "@types/supertest": "2.0.4",
     "chai": "4.1.2",
@@ -52,7 +52,7 @@
     "source-map-support": "0.5.6",
     "supertest": "3.1.0",
     "tslint": "5.9.1",
-    "typescript": "2.6.2"
+    "typescript": "2.9.1"
   },
   "dependencies": {
     "gulp-debug": "^4.0.0",
