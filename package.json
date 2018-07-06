@@ -30,7 +30,7 @@
     "@types/bunyan": "^1.8.4",
     "@types/chai": "4.1.4",
     "@types/mocha": "5.2.3",
-    "@types/node": "10.3.6",
+    "@types/node": "10.5.2",
     "@types/restify": "^7.2.0",
     "@types/sinon": "5.0.1",
     "@types/spdy": "^3.4.4",
