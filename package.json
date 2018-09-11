@@ -34,7 +34,7 @@
     "@types/restify": "^7.2.0",
     "@types/sinon": "5.0.2",
     "@types/spdy": "^3.4.4",
-    "@types/supertest": "2.0.5",
+    "@types/supertest": "2.0.6",
     "chai": "4.1.2",
     "del": "^3.0.0",
     "gulp": "3.9.1",
