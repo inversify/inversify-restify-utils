@@ -56,6 +56,6 @@
   },
   "dependencies": {
     "gulp-debug": "^4.0.0",
-    "restify": "7.7.0"
+    "restify": "8.0.0"
   }
 }
