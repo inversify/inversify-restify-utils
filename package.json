@@ -29,7 +29,7 @@
   "devDependencies": {
     "@types/bunyan": "^1.8.4",
     "@types/chai": "4.1.4",
-    "@types/mocha": "5.2.6",
+    "@types/mocha": "5.2.7",
     "@types/node": "10.12.21",
     "@types/restify": "^7.2.0",
     "@types/sinon": "7.0.5",
