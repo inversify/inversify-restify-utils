@@ -30,7 +30,7 @@ gulp.task("clean", function () {
 //******************************************************************************
 //* LINT
 //******************************************************************************
-gulp.task("lint", function() {
+gulp.task("lint", function () {
 
     var config = {
         fornatter: "verbose",
@@ -38,9 +38,9 @@ gulp.task("lint", function() {
     };
 
     return gulp.src([
-            "src/**/**.ts",
-            "test/**/**.test.ts"
-        ])
+        "src/**/**.ts",
+        "test/**/**.test.ts"
+    ])
         .pipe(tslint(config))
         .pipe(tslint.report());
 });
@@ -52,12 +52,12 @@ var tsLibProject = tsc.createProject("tsconfig.json", {
     module: "commonjs"
 });
 
-gulp.task("build-lib", function() {
+gulp.task("build-lib", function () {
     return gulp.src([
-            "src/**/*.ts"
-        ])
+        "src/**/*.ts"
+    ])
         .pipe(tsLibProject())
-        .on("error", function(err) {
+        .on("error", function (err) {
             process.exit(1);
         })
         .js.pipe(gulp.dest("lib/"));
@@ -67,12 +67,12 @@ var tsEsProject = tsc.createProject("tsconfig.json", {
     module: "es2015"
 });
 
-gulp.task("build-es", function() {
+gulp.task("build-es", function () {
     return gulp.src([
-            "src/**/*.ts"
-        ])
+        "src/**/*.ts"
+    ])
         .pipe(tsEsProject())
-        .on("error", function(err) {
+        .on("error", function (err) {
             process.exit(1);
         })
         .js.pipe(gulp.dest("es/"));
@@ -83,12 +83,12 @@ var tsDtsProject = tsc.createProject("tsconfig.json", {
     noResolve: false
 });
 
-gulp.task("build-dts", function() {
+gulp.task("build-dts", function () {
     return gulp.src([
-            "src/**/*.ts"
-        ])
+        "src/**/*.ts"
+    ])
         .pipe(tsDtsProject())
-        .on("error", function(err) {
+        .on("error", function (err) {
             process.exit(1);
         })
         .dts.pipe(gulp.dest("dts"));
@@ -100,13 +100,13 @@ gulp.task("build-dts", function() {
 //******************************************************************************
 var tstProject = tsc.createProject("tsconfig.json");
 
-gulp.task("build-src", function() {
+gulp.task("build-src", function () {
     return gulp.src([
-            "src/**/*.ts"
+        "src/**/*.ts"
     ])
         .pipe(sourcemaps.init())
         .pipe(tstProject())
-        .on("error", function(err) {
+        .on("error", function (err) {
             process.exit(1);
         })
         .js.pipe(sourcemaps.write(".", {
@@ -118,13 +118,13 @@ gulp.task("build-src", function() {
 });
 
 var tsTestProject = tsc.createProject("tsconfig.json");
-gulp.task("build-test", function() {
+gulp.task("build-test", function () {
     return gulp.src([
-            "test/**/*.ts"
-        ])
+        "test/**/*.ts"
+    ])
         .pipe(sourcemaps.init())
         .pipe(tsTestProject())
-        .on("error", function(err) {
+        .on("error", function (err) {
             process.exit(1);
         })
         .js.pipe(sourcemaps.write(".", {
@@ -135,18 +135,18 @@ gulp.task("build-test", function() {
         .pipe(gulp.dest("test/"));;
 });
 
-gulp.task("mocha", function() {
+gulp.task("mocha", function () {
     return gulp.src([
-            "node_modules/reflect-metadata/Reflect.js",
-            "test/**/*.test.js"
-        ])
+        "node_modules/reflect-metadata/Reflect.js",
+        "test/**/*.test.js"
+    ])
         .pipe(mocha({
             ui: "bdd"
         }))
         .pipe(istanbul.writeReports());
 });
 
-gulp.task("istanbul:hook", function() {
+gulp.task("istanbul:hook", function () {
     return gulp.src(["src/**/*.js"])
         // Covering files
         .pipe(istanbul())
@@ -154,24 +154,29 @@ gulp.task("istanbul:hook", function() {
         .pipe(istanbul.hookRequire());
 });
 
-gulp.task("test", function(cb) {
-    runSequence("istanbul:hook", "mocha", cb);
-});
+gulp.task("test", gulp.series(
+    "istanbul:hook",
+    "mocha",
+));
 
-gulp.task("build", function(cb) {
-    runSequence(
-        "lint", ["build-src", "build-es", "build-lib", "build-dts"], // tests + build es and lib
-        "build-test",
-        cb);
-});
+gulp.task("build",
+    gulp.series(
+        "lint",
+        gulp.parallel(
+            "build-src"
+            , "build-test"
+            , "build-es"
+            , "build-lib"
+            , "build-dts"
+        ),
+
+    )
+);
 
 //******************************************************************************
 //* DEFAULT
 //******************************************************************************
-gulp.task("default", function(cb) {
-    runSequence(
-        "clean",
-        "build",
-        "test",
-        cb);
-});
+gulp.task("default", gulp.series(
+    "build",
+    "test",
+));
