@@ -30,7 +30,7 @@
   "homepage": "https://github.com/inversify/inversify-restify-utils#readme",
   "devDependencies": {
     "@types/bunyan": "^1.8.6",
-    "@types/chai": "4.2.0",
+    "@types/chai": "4.2.2",
     "@types/mocha": "5.2.7",
     "@types/node": "12.7.2",
     "@types/restify": "^7.2.12",
