@@ -34,7 +34,7 @@
     "@types/mocha": "5.2.7",
     "@types/node": "12.7.3",
     "@types/restify": "^8.4.0",
-    "@types/sinon": "7.5.0",
+    "@types/sinon": "7.5.2",
     "@types/spdy": "^3.4.4",
     "@types/supertest": "2.0.8",
     "chai": "4.2.0",
