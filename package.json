@@ -55,7 +55,7 @@
     "supertest": "4.0.2",
     "tslint": "5.19.0",
     "typescript": "3.5.3",
-    "updates": "^8.5.3"
+    "updates": "^10.2.7"
   },
   "dependencies": {
     "gulp-debug": "^4.0.0",
