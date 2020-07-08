@@ -30,13 +30,13 @@
   "homepage": "https://github.com/inversify/inversify-restify-utils#readme",
   "devDependencies": {
     "@types/bunyan": "^1.8.6",
-    "@types/chai": "4.2.0",
+    "@types/chai": "4.2.11",
     "@types/mocha": "5.2.7",
-    "@types/node": "12.7.3",
-    "@types/restify": "^8.4.0",
-    "@types/sinon": "7.5.0",
+    "@types/node": "12.12.48",
+    "@types/restify": "^8.4.2",
+    "@types/sinon": "7.5.2",
     "@types/spdy": "^3.4.4",
-    "@types/supertest": "2.0.8",
+    "@types/supertest": "2.0.10",
     "chai": "4.2.0",
     "del": "^5.1.0",
     "gulp": "4.0.2",
@@ -46,19 +46,19 @@
     "gulp-tslint": "8.1.4",
     "gulp-typescript": "5.0.1",
     "inversify": "5.0.1",
-    "mocha": "6.2.1",
+    "mocha": "6.2.3",
     "publish-please": "5.5.1",
     "reflect-metadata": "0.1.13",
     "run-sequence": "2.2.1",
-    "sinon": "7.4.2",
-    "source-map-support": "0.5.13",
+    "sinon": "7.5.0",
+    "source-map-support": "0.5.19",
     "supertest": "4.0.2",
-    "tslint": "5.19.0",
-    "typescript": "3.5.3",
+    "tslint": "5.20.1",
+    "typescript": "3.9.6",
     "updates": "^8.5.3"
   },
   "dependencies": {
     "gulp-debug": "^4.0.0",
-    "restify": "8.4.0"
+    "restify": "8.5.1"
   }
 }
