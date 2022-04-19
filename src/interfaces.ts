@@ -1,9 +1,9 @@
-import * as restify from "restify";
 import { interfaces as inversifyInterfaces } from "inversify";
+import { RequestHandler, Server, ServerOptions as RestifyServerOptions } from "restify";
 
 namespace interfaces {
 
-    export type Middleware = (inversifyInterfaces.ServiceIdentifier<any> | restify.RequestHandler);
+    export type Middleware = (inversifyInterfaces.ServiceIdentifier<any> | RequestHandler);
 
     export interface ControllerMetadata {
         path: string;
@@ -29,10 +29,10 @@ namespace interfaces {
     }
 
     export interface ConfigFunction {
-        (app: restify.Server): void;
+        (app: Server): void;
     }
 
-    export interface ServerOptions extends restify.ServerOptions {
+    export interface ServerOptions extends RestifyServerOptions {
       defaultRoot?: string;
     }
 }
