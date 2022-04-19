@@ -58,7 +58,6 @@
     "updates": "^8.5.3"
   },
   "dependencies": {
-    "gulp-debug": "^4.0.0",
-    "restify": "8.5.1"
+    "restify": "^8.5.1"
   }
 }
