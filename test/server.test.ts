@@ -1,16 +1,16 @@
 import { expect } from "chai";
-import * as sinon from "sinon";
-import * as restify from "restify";
-import { InversifyRestifyServer } from "../src/server";
-import { Controller, Method } from "../src/decorators";
 import { Container, injectable } from "inversify";
+import { Next, Request, Response, Server } from "restify";
+import { spy } from "sinon";
 import { TYPE } from "../src/constants";
+import { Controller, Method } from "../src/decorators";
+import { InversifyRestifyServer } from "../src/server";
 
 describe("Unit Test: InversifyRestifyServer", () => {
 
     it("should call the configFn", () => {
-        let middleware = function(req: restify.Request, res: restify.Response, next: restify.Next) { return; };
-        let configFn = sinon.spy((app: restify.Server) => { app.use(middleware); });
+        let middleware = function(req: Request, res: Response, next: Next) { return; };
+        let configFn = spy((app: Server) => { app.use(middleware); });
         let container = new Container();
 
         @injectable()

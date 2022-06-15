@@ -1,14 +1,14 @@
-import * as inversify from "inversify";
-import * as restify from "restify";
+import { Container } from "inversify";
+import { createServer, Next, Request, RequestHandler, Response, Server, ServerOptions } from "restify";
+import { METADATA_KEY, TYPE } from "./constants";
 import { interfaces } from "./interfaces";
-import { TYPE, METADATA_KEY } from "./constants";
 
 /**
  * Wrapper for the restify server.
  */
 export class InversifyRestifyServer {
-    private container: inversify.interfaces.Container;
-    private app: restify.Server;
+    private container: Container;
+    private app: Server;
     private configFn: interfaces.ConfigFunction;
     private defaultRoot: string | null = null;
 
@@ -17,14 +17,14 @@ export class InversifyRestifyServer {
      *
      * @param container Container loaded with all controllers and their dependencies.
      */
-    constructor(container: inversify.interfaces.Container, opts?: (restify.ServerOptions & interfaces.ServerOptions)) {
+    constructor(container: Container, opts?: (ServerOptions & interfaces.ServerOptions)) {
         opts = {
             ignoreTrailingSlash : true,
             ...opts
         };
 
         this.container = container;
-        this.app = restify.createServer(opts as restify.ServerOptions);
+        this.app = createServer(opts as ServerOptions);
         if (
             opts &&
             opts.hasOwnProperty("defaultRoot") &&
@@ -50,7 +50,7 @@ export class InversifyRestifyServer {
     /**
      * Applies all routes and configuration to the server, returning the restify application.
      */
-    public build(): restify.Server {
+    public build(): Server {
         // register server-level middleware before anything else
         if (this.configFn) {
             this.configFn.apply(undefined, [this.app]);
@@ -86,7 +86,7 @@ export class InversifyRestifyServer {
             if (controllerMetadata && methodMetadata) {
                 let controllerMiddleware = this.resolveMiddleware(...controllerMetadata.middleware);
                 methodMetadata.forEach((metadata: interfaces.ControllerMethodMetadata) => {
-                    let handler: restify.RequestHandler = this.handlerFactory(controllerMetadata.target.name, metadata.key);
+                    let handler: RequestHandler = this.handlerFactory(controllerMetadata.target.name, metadata.key);
                     let routeOptions: any = typeof metadata.options === "string" ? { path: metadata.options } : metadata.options;
                     let routeMiddleware = this.resolveMiddleware(...metadata.middleware);
                     if (typeof routeOptions.path === "string" && typeof controllerMetadata.path === "string"
@@ -102,18 +102,18 @@ export class InversifyRestifyServer {
         });
     }
 
-    private resolveMiddleware(...middleware: interfaces.Middleware[]): restify.RequestHandler[] {
+    private resolveMiddleware(...middleware: interfaces.Middleware[]): RequestHandler[] {
         return middleware.map(middlewareItem => {
             try {
-                return this.container.get<restify.RequestHandler>(middlewareItem);
+                return this.container.get<RequestHandler>(middlewareItem);
             } catch (_) {
-                return middlewareItem as restify.RequestHandler;
+                return middlewareItem as RequestHandler;
             }
         });
     }
 
-    private handlerFactory(controllerName: any, key: string): restify.RequestHandler {
-        return (req: restify.Request, res: restify.Response, next: restify.Next) => {
+    private handlerFactory(controllerName: any, key: string): RequestHandler {
+        return (req: Request, res: Response, next: Next) => {
 
             let result: any = (this.container.getNamed(TYPE.Controller, controllerName) as any)[key](req, res, next);
 

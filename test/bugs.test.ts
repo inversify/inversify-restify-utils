@@ -1,11 +1,11 @@
-import * as request from "supertest";
-import { InversifyRestifyServer } from "../src/server";
-import { interfaces } from "../src/interfaces";
-import { Controller, Get } from "../src/decorators";
-import { Container, injectable } from "inversify";
-import { TYPE } from "../src/constants";
-import * as sinon from "sinon";
 import { expect } from "chai";
+import { Container, injectable } from "inversify";
+import { spy } from "sinon";
+import request from "supertest";
+import { TYPE } from "../src/constants";
+import { Controller, Get } from "../src/decorators";
+import { interfaces } from "../src/interfaces";
+import { InversifyRestifyServer } from "../src/server";
 
 describe("Unit Test: Bugs", () => {
     let container = new Container();
@@ -22,7 +22,7 @@ describe("Unit Test: Bugs", () => {
             }
         }
 
-        let spyA = sinon.spy((req: any, res: any) => null);
+        let spyA = spy((req: any, res: any) => null);
 
         container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -50,7 +50,7 @@ describe("Unit Test: Bugs", () => {
             }
         }
 
-        let spyA = sinon.spy((req: any, res: any) => null);
+        let spyA = spy((req: any, res: any) => null);
 
         container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 

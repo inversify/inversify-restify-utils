@@ -1,19 +1,19 @@
 import "reflect-metadata";
 
-import * as sinon from "sinon";
-import * as request from "supertest";
 import { expect } from "chai";
-import * as inversify from "inversify";
-import * as restify from "restify";
-import { injectable, Container } from "inversify";
+import { Container, injectable } from "inversify";
+import { Next, Request, RequestHandler, Response } from "restify";
+import { spy } from "sinon";
+import request from "supertest";
+import { TYPE } from "../src/constants";
+import { Controller, Delete, Get, Head, Method, Patch, Post, Put } from "../src/decorators";
 import { interfaces } from "../src/interfaces";
 import { InversifyRestifyServer } from "../src/server";
-import { Controller, Method, Get, Post, Put, Patch, Head, Delete } from "../src/decorators";
-import { TYPE } from "../src/constants";
+
 
 describe("Integration Tests:", () => {
     let server: InversifyRestifyServer;
-    let container: inversify.interfaces.Container;
+    let container: Container;
 
     beforeEach((done) => {
         // refresh container
@@ -65,12 +65,12 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/")
             class TestController {
-                @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
-                @Post("/") public postTest(req: restify.Request, res: restify.Response) { res.send("POST"); }
-                @Put("/") public putTest(req: restify.Request, res: restify.Response) { res.send("PUT"); }
-                @Patch("/") public patchTest(req: restify.Request, res: restify.Response) { res.send("PATCH"); }
-                @Head("/") public headTest(req: restify.Request, res: restify.Response) { res.send("HEAD"); }
-                @Delete("/") public deleteTest(req: restify.Request, res: restify.Response) { res.send("DELETE"); }
+                @Get("/") public getTest(req: Request, res: Response) { res.send("GET"); }
+                @Post("/") public postTest(req: Request, res: Response) { res.send("POST"); }
+                @Put("/") public putTest(req: Request, res: Response) { res.send("PUT"); }
+                @Patch("/") public patchTest(req: Request, res: Response) { res.send("PATCH"); }
+                @Head("/") public headTest(req: Request, res: Response) { res.send("HEAD"); }
+                @Delete("/") public deleteTest(req: Request, res: Response) { res.send("DELETE"); }
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -92,7 +92,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/")
             class TestController {
-                @Method("opts", "/") public getTest(req: restify.Request, res: restify.Response) { res.send("OPTIONS"); }
+                @Method("opts", "/") public getTest(req: Request, res: Response) { res.send("OPTIONS"); }
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -110,7 +110,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/")
             class TestController {
-                @Get("/") public getTest(req: restify.Request, res: restify.Response) { return result; }
+                @Get("/") public getTest(req: Request, res: Response) { return result; }
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -128,7 +128,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/")
             class TestController {
-                @Get("/") public getTest(req: restify.Request, res: restify.Response) { return result; }
+                @Get("/") public getTest(req: Request, res: Response) { return result; }
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -136,7 +136,7 @@ describe("Integration Tests:", () => {
                 container,
                 {
                     formatters: {
-                        "application/json": (req: restify.Request, res: restify.Response, body: any) => {
+                        "application/json": (req: Request, res: Response, body: any) => {
                             res.setHeader(customHeaderName, customHeaderValue);
                             return null;
                         }
@@ -157,7 +157,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/")
             class TestController {
-                @Get("/") public getTest(req: restify.Request, res: restify.Response) { return result; }
+                @Get("/") public getTest(req: Request, res: Response) { return result; }
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -166,7 +166,7 @@ describe("Integration Tests:", () => {
                 {
                     defaultRoot: "/v1",
                     formatters: {
-                        "application/json": (req: restify.Request, res: restify.Response, body: any) => {
+                        "application/json": (req: Request, res: Response, body: any) => {
                             res.setHeader(customHeaderName, customHeaderValue);
                             return null;
                         }
@@ -184,22 +184,22 @@ describe("Integration Tests:", () => {
     describe("Middleware:", () => {
         let result: string;
         let middleware: any = {
-            a: function (req: restify.Request, res: restify.Response, next: restify.Next) {
+            a: function (req: Request, res: Response, next: Next) {
                 result += "a";
                 next();
             },
-            b: function (req: restify.Request, res: restify.Response, next: restify.Next) {
+            b: function (req: Request, res: Response, next: Next) {
                 result += "b";
                 next();
             },
-            c: function (req: restify.Request, res: restify.Response, next: restify.Next) {
+            c: function (req: Request, res: Response, next: Next) {
                 result += "c";
                 next();
             }
         };
-        let spyA = sinon.spy(middleware, "a");
-        let spyB = sinon.spy(middleware, "b");
-        let spyC = sinon.spy(middleware, "c");
+        let spyA = spy(middleware, "a");
+        let spyB = spy(middleware, "b");
+        let spyC = spy(middleware, "c");
 
         beforeEach((done) => {
             result = "";
@@ -213,7 +213,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/")
             class TestController {
-                @Get("/", spyA, spyB, spyC) public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+                @Get("/", spyA, spyB, spyC) public getTest(req: Request, res: Response) { res.send("GET"); }
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -234,7 +234,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/", spyA, spyB, spyC)
             class TestController {
-                @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+                @Get("/") public getTest(req: Request, res: Response) { res.send("GET"); }
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -255,7 +255,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/")
             class TestController {
-                @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+                @Get("/") public getTest(req: Request, res: Response) { res.send("GET"); }
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -283,7 +283,7 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/", spyB)
             class TestController {
-                @Get("/", spyC) public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+                @Get("/", spyC) public getTest(req: Request, res: Response) { res.send("GET"); }
             }
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -311,12 +311,12 @@ describe("Integration Tests:", () => {
             @injectable()
             @Controller("/", symbolId, strId)
             class TestController {
-                @Get("/") public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+                @Get("/") public getTest(req: Request, res: Response) { res.send("GET"); }
             }
 
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
-            container.bind<restify.RequestHandler>(symbolId).toConstantValue(spyA);
-            container.bind<restify.RequestHandler>(strId).toConstantValue(spyB);
+            container.bind<RequestHandler>(symbolId).toConstantValue(spyA);
+            container.bind<RequestHandler>(strId).toConstantValue(spyB);
 
             server = new InversifyRestifyServer(container);
 
@@ -338,12 +338,12 @@ describe("Integration Tests:", () => {
             @Controller("/")
             class TestController {
                 @Get("/", symbolId, strId)
-                public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+                public getTest(req: Request, res: Response) { res.send("GET"); }
             }
 
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
-            container.bind<restify.RequestHandler>(symbolId).toConstantValue(spyA);
-            container.bind<restify.RequestHandler>(strId).toConstantValue(spyB);
+            container.bind<RequestHandler>(symbolId).toConstantValue(spyA);
+            container.bind<RequestHandler>(strId).toConstantValue(spyB);
 
             server = new InversifyRestifyServer(container);
 
@@ -365,12 +365,12 @@ describe("Integration Tests:", () => {
             @Controller("/", symbolId)
             class TestController {
                 @Get("/", strId)
-                public getTest(req: restify.Request, res: restify.Response) { res.send("GET"); }
+                public getTest(req: Request, res: Response) { res.send("GET"); }
             }
 
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
-            container.bind<restify.RequestHandler>(symbolId).toConstantValue(spyA);
-            container.bind<restify.RequestHandler>(strId).toConstantValue(spyB);
+            container.bind<RequestHandler>(symbolId).toConstantValue(spyA);
+            container.bind<RequestHandler>(strId).toConstantValue(spyB);
 
             server = new InversifyRestifyServer(container);
 

@@ -94,7 +94,7 @@ import * as morgan from 'morgan';
 // ...
 let server = new InversifyRestifyServer(container);
 server.setConfig((app) => {
-    var logger = morgan('combined')
+    const logger = morgan('combined')
     app.use(logger);
 });
 ```
