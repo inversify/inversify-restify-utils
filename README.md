@@ -18,7 +18,7 @@ Some utilities for the development of restify application with Inversify.
 You can install `inversify-restify-utils` using npm:
 
 ```
-$ npm install inversify inversify-restify-utils reflect-metadata --save
+$ npm install inversify inversify-restify-utils reflect-metadata restify --save
 ```
 
 The `inversify-restify-utils` type definitions are included in the npm module and require TypeScript 2.0.

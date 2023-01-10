@@ -1,23 +1,24 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "lib": ["es6", "dom"],
-        "types": ["inversify", "mocha", "reflect-metadata", "restify"],
-        "baseUrl": ".",
+        "lib": ["es2017"],
         "module": "commonjs",
+        "target": "es2017", // node 8
+        "strict": true,
+        "strictPropertyInitialization": false, // should be true
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
         "moduleResolution": "node",
-        "isolatedModules": false,
-        "jsx": "react",
+        "allowUnusedLabels": false,
+        "allowUnreachableCode": false,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false, // should be true
+        "importsNotUsedAsValues": "remove", // should be error
+        "types": ["inversify", "mocha", "reflect-metadata", "restify"],
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "noImplicitAny": true,
-        "preserveConstEnums": true,
-        "removeComments": true,
-        "suppressImplicitAnyIndexErrors": false,
-        "noResolve": false,
-        "noUnusedParameters": false,
-        "noUnusedLocals": true,
-        "strictNullChecks": true,
-        "esModuleInterop": true,
+        "removeComments": true
     }
 }
