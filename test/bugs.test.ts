@@ -1,6 +1,4 @@
-import { expect } from "chai";
 import { Container, injectable } from "inversify";
-import { spy } from "sinon";
 import request from "supertest";
 import { TYPE } from "../src/constants";
 import { Controller, Get } from "../src/decorators";
@@ -22,7 +20,7 @@ describe("Unit Test: Bugs", () => {
             }
         }
 
-        let spyA = spy((req: any, res: any) => null);
+        let spyA = jest.fn((req: any, res: any) => null);
 
         container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -35,7 +33,7 @@ describe("Unit Test: Bugs", () => {
             .get("/noPromise")
             .set("Accept", "text/plain")
             .expect(200, "GET", () => {
-                expect(spyA.calledOnce).to.eq(true);
+                expect(spyA).toHaveBeenCalledTimes(1);
                 done();
             });
 
@@ -50,7 +48,7 @@ describe("Unit Test: Bugs", () => {
             }
         }
 
-        let spyA = spy((req: any, res: any) => null);
+        let spyA = jest.fn((req: any, res: any) => null);
 
         container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
 
@@ -63,7 +61,7 @@ describe("Unit Test: Bugs", () => {
             .get("/")
             .set("Accept", "text/plain")
             .expect(200, "GET", () => {
-                expect(spyA.calledOnce).to.eq(true);
+                expect(spyA).toHaveBeenCalledTimes(1);
                 done();
             });
 

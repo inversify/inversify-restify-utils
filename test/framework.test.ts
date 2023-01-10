@@ -1,9 +1,5 @@
-import "reflect-metadata";
-
-import { expect } from "chai";
 import { Container, injectable } from "inversify";
 import { Next, Request, RequestHandler, Response } from "restify";
-import { spy } from "sinon";
 import request from "supertest";
 import { TYPE } from "../src/constants";
 import { Controller, Delete, Get, Head, Method, Patch, Post, Put } from "../src/decorators";
@@ -197,15 +193,15 @@ describe("Integration Tests:", () => {
                 next();
             }
         };
-        let spyA = spy(middleware, "a");
-        let spyB = spy(middleware, "b");
-        let spyC = spy(middleware, "c");
+        let spyA = jest.fn().mockImplementation(middleware.a);
+        let spyB = jest.fn().mockImplementation(middleware.b);
+        let spyC = jest.fn().mockImplementation(middleware.c);
 
         beforeEach((done) => {
             result = "";
-            spyA.resetHistory();
-            spyB.resetHistory();
-            spyC.resetHistory();
+            spyA.mockClear();
+            spyB.mockClear();
+            spyC.mockClear();
             done();
         });
 
@@ -221,10 +217,10 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
-                    expect(spyA.calledOnce).to.eq(true);
-                    expect(spyB.calledOnce).to.eq(true);
-                    expect(spyC.calledOnce).to.eq(true);
-                    expect(result).to.equal("abc");
+                    expect(spyA).toHaveBeenCalledTimes(1);
+                    expect(spyB).toHaveBeenCalledTimes(1);
+                    expect(spyC).toHaveBeenCalledTimes(1);
+                    expect(result).toEqual("abc");
                     done();
                 });
         });
@@ -242,10 +238,10 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
-                    expect(spyA.calledOnce).to.eq(true);
-                    expect(spyB.calledOnce).to.eq(true);
-                    expect(spyC.calledOnce).to.eq(true);
-                    expect(result).to.equal("abc");
+                    expect(spyA).toHaveBeenCalledTimes(1);
+                    expect(spyB).toHaveBeenCalledTimes(1);
+                    expect(spyC).toHaveBeenCalledTimes(1);
+                    expect(result).toEqual("abc");
                     done();
                 });
         });
@@ -262,18 +258,18 @@ describe("Integration Tests:", () => {
             server = new InversifyRestifyServer(container);
 
             server.setConfig((app) => {
-               app.use(spyA);
-               app.use(spyB);
-               app.use(spyC);
+                app.use(spyA);
+                app.use(spyB);
+                app.use(spyC);
             });
 
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
-                    expect(spyA.calledOnce).to.eq(true);
-                    expect(spyB.calledOnce).to.eq(true);
-                    expect(spyC.calledOnce).to.eq(true);
-                    expect(result).to.equal("abc");
+                    expect(spyA).toHaveBeenCalledTimes(1);
+                    expect(spyB).toHaveBeenCalledTimes(1);
+                    expect(spyC).toHaveBeenCalledTimes(1);
+                    expect(result).toEqual("abc");
                     done();
                 });
         });
@@ -290,16 +286,16 @@ describe("Integration Tests:", () => {
             server = new InversifyRestifyServer(container);
 
             server.setConfig((app) => {
-               app.use(spyA);
+                app.use(spyA);
             });
 
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function () {
-                    expect(spyA.calledOnce).to.eq(true);
-                    expect(spyB.calledOnce).to.eq(true);
-                    expect(spyC.calledOnce).to.eq(true);
-                    expect(result).to.equal("abc");
+                    expect(spyA).toHaveBeenCalledTimes(1);
+                    expect(spyB).toHaveBeenCalledTimes(1);
+                    expect(spyC).toHaveBeenCalledTimes(1);
+                    expect(result).toEqual("abc");
                     done();
                 });
         });
@@ -323,9 +319,9 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function() {
-                    expect(spyA.calledOnce).to.eq(true);
-                    expect(spyB.calledOnce).to.eq(true);
-                    expect(result).to.equal("ab");
+                    expect(spyA).toHaveBeenCalledTimes(1);
+                    expect(spyB).toHaveBeenCalledTimes(1);
+                    expect(result).toEqual("ab");
                     done();
                 });
         });
@@ -349,10 +345,10 @@ describe("Integration Tests:", () => {
 
             request(server.build())
                 .get("/")
-                .expect(200, "GET", function() {
-                    expect(spyA.calledOnce).to.eq(true);
-                    expect(spyB.calledOnce).to.eq(true);
-                    expect(result).to.equal("ab");
+                .expect(200, "GET", () => {
+                    expect(spyA).toHaveBeenCalledTimes(1);
+                    expect(spyB).toHaveBeenCalledTimes(1);
+                    expect(result).toEqual("ab");
                     done();
                 });
         });
@@ -365,7 +361,7 @@ describe("Integration Tests:", () => {
             @Controller("/", symbolId)
             class TestController {
                 @Get("/", strId)
-                public getTest(req: Request, res: Response) { res.send("GET"); }
+                public async getTest(req: Request, res: Response) { res.send("GET"); }
             }
 
             container.bind<interfaces.Controller>(TYPE.Controller).to(TestController).whenTargetNamed("TestController");
@@ -377,9 +373,9 @@ describe("Integration Tests:", () => {
             request(server.build())
                 .get("/")
                 .expect(200, "GET", function() {
-                    expect(spyA.calledOnce).to.eq(true);
-                    expect(spyB.calledOnce).to.eq(true);
-                    expect(result).to.equal("ab");
+                    expect(spyA).toHaveBeenCalledTimes(1);
+                    expect(spyB).toHaveBeenCalledTimes(1);
+                    expect(result).toEqual("ab");
                     done();
                 });
         });
