@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { Controller, Method } from "../src/decorators";
 import { interfaces } from "../src/interfaces";
 
@@ -13,9 +12,9 @@ describe("Unit Test: Controller Decorators", () => {
 
         let controllerMetadata: interfaces.ControllerMetadata = Reflect.getMetadata("_controller", TestController);
 
-        expect(controllerMetadata.middleware).eql(middleware);
-        expect(controllerMetadata.path).eql(path);
-        expect(controllerMetadata.target).eql(TestController);
+        expect(controllerMetadata.middleware).toEqual(middleware);
+        expect(controllerMetadata.path).toEqual(path);
+        expect(controllerMetadata.target).toEqual(TestController);
         done();
     });
 
@@ -38,15 +37,15 @@ describe("Unit Test: Controller Decorators", () => {
 
         let methodMetadata: interfaces.ControllerMethodMetadata[] = Reflect.getMetadata("_controller-method", TestController);
 
-        expect(methodMetadata.length).eql(3);
+        expect(methodMetadata.length).toEqual(3);
 
         let metadata: interfaces.ControllerMethodMetadata = methodMetadata[0];
 
-        expect(metadata.middleware).eql(middleware);
-        expect(metadata.options).eql(path);
-        expect(metadata.target.constructor).eql(TestController);
-        expect(metadata.key).eql("test");
-        expect(metadata.method).eql(method);
+        expect(metadata.middleware).toEqual(middleware);
+        expect(metadata.options).toEqual(path);
+        expect(metadata.target.constructor).toEqual(TestController);
+        expect(metadata.key).toEqual("test");
+        expect(metadata.method).toEqual(method);
         done();
     });
 });
