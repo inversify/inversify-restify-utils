@@ -19,6 +19,7 @@
         "types": ["inversify", "mocha", "reflect-metadata", "restify"],
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "removeComments": true
+        "removeComments": true,
+        "rootDir": "."
     }
 }
